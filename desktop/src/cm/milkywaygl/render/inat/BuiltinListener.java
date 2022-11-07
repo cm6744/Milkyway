@@ -3,7 +3,7 @@ package cm.milkywaygl.render.inat;
 import cm.milkywaygl.render.nnat.TaskCaller;
 import com.badlogic.gdx.ApplicationListener;
 
-class BuiltinNative implements ApplicationListener
+class BuiltinListener implements ApplicationListener
 {
 
     @Override

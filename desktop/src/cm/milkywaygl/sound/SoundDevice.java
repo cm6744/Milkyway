@@ -1,8 +1,8 @@
 package cm.milkywaygl.sound;
 
 import cm.milkywaygl.Platform;
+import cm.milkywaygl.inter.GLTickable;
 import cm.milkywaygl.multithread.ThreadManager;
-import cm.milkywaygl.multithread.ThreadTask;
 import cm.milkywaygl.resource.Resource;
 import cm.milkywaygl.resource.StreamManager;
 
@@ -83,7 +83,7 @@ public class SoundDevice
         return volume;
     }
 
-    private class SoundPlayer extends ThreadTask
+    private class SoundPlayer implements GLTickable
     {
 
         String nowPlay;
@@ -95,7 +95,7 @@ public class SoundDevice
             loopTimes = loop;
         }
 
-        public void update()
+        public void tick()
         {
             do {
                 while(nowPlay == null) {

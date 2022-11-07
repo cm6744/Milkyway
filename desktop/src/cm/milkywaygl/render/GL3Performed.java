@@ -1,5 +1,6 @@
 package cm.milkywaygl.render;
 
+import cm.milkywaygl.inter.GLBatch;
 import cm.milkywaygl.render.nnat.TaskCaller;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.util.IntBuffer;
@@ -7,7 +8,7 @@ import cm.milkywaygl.util.container.List;
 import cm.milkywaylib.linklib.ModelBuffer;
 import cm.test.Assets;
 
-public class GL3Performed implements GLObject
+public class GL3Performed
 {
 
     public GL gl;
@@ -32,6 +33,15 @@ public class GL3Performed implements GLObject
         GL.gl3.modelBindTex(md, Assets.win);
         roof = GL.gl3.genModel(700, 2, 420);
         GL.gl3.modelBindColor(roof, Color4.BLACK);
+        addPair(0);
+        addPair(-700);
+        addPair(-1400);
+        addPair(-2100);
+        addPair(-2800);
+        addPair(-3500);
+        addPair(-4200);
+        addPair(-4900);
+        addPair(-5600);
     }
 
     private void addPair(float x)
@@ -56,18 +66,6 @@ public class GL3Performed implements GLObject
 
     public void tick()
     {
-        if(TaskCaller.globalTime == 0) {
-            init();
-            addPair(0);
-            addPair(-700);
-            addPair(-1400);
-            addPair(-2100);
-            addPair(-2800);
-            addPair(-3500);
-            addPair(-4200);
-            addPair(-4900);
-            addPair(-5600);
-        }
         boolean add = false;
         float lastX = 0;
         for(int i = inss.last(); i >= 0; i--) {

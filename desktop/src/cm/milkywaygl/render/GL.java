@@ -1,27 +1,30 @@
 package cm.milkywaygl.render;
 
+import cm.milkywaygl.inter.GLBatch;
 import cm.milkywaygl.Platform;
 import cm.milkywaygl.render.inat.Context;
-import cm.milkywaygl.render.nnat.GL8;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.render.wrapper.Font2;
+import cm.milkywaygl.render.wrapper.FontType;
 import com.badlogic.gdx.Gdx;
 
-import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
-import static com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.*;
 
-public class GL implements GLObject
+public class GL
 {
 
     public static GL2 gl2;
     public static GL3 gl3;
-    public static GL8 gl8;
+    public static GL4 gl4;
+    public static GL2F gl2f;
     public static GL gl;
 
     public double zoom, zoomedW, zoomedH;
     public double cornerX, cornerY;
     public boolean initialized;
-    public boolean blocked;
+
+    GLBatch blocking;
+
     State mutable = new State();
     State store = new State();
 
@@ -30,7 +33,10 @@ public class GL implements GLObject
         gl = new GL();
         gl2 = new GL2(gl);
         gl3 = new GL3(gl);
-        gl8 = new GL8(gl2);
+        gl4 = new GL4(gl);
+
+        gl2f = new GL2F(gl, gl2);
+
         gl.init();
 
         Platform.log("GL was created. Rendering opened.");
@@ -52,6 +58,8 @@ public class GL implements GLObject
 
         gl2.init();
         gl3.init();
+        gl4.init();
+
         gl.initialized = true;
 
         Platform.log("GL calculate current zoom scale: " + zoom);
@@ -61,6 +69,8 @@ public class GL implements GLObject
     {
         gl2.dispose();
         gl3.dispose();
+        gl4.dispose();
+        FontType.dispose();
 
         Platform.log("GL was disposed.");
     }
@@ -80,6 +90,12 @@ public class GL implements GLObject
         return (value);
     }
 
+    public void clear()
+    {
+        Gdx.gl.glClearColor(0, 0, 0, 1f);
+        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
+
     public void viewPort()
     {
         Gdx.gl.glViewport((int) cornerX, (int) cornerY, (int) zoomedW, (int) zoomedH);
@@ -90,56 +106,61 @@ public class GL implements GLObject
         Gdx.gl.glViewport(0, 0, (int) Context.winWidth(), (int) Context.winHeight());
     }
 
-    public void begin()
+    //BLOCKING
+
+    //when your render method end, invoke this.
+    public void freeAll()
     {
-        if(blocked) {
+        ensure(null);
+        blocking = null;
+    }
+
+    public GLBatch curBlocking()
+    {
+        return blocking;
+    }
+
+    //ensure the given batch is begun.
+    //if given batch is null, it will not begin a new batch.
+    public void ensure(GLBatch batch)
+    {
+        if(blocking != batch) {
+            if(batch == null) {
+                blocking.end();
+            }
+            else if(blocking == null) {
+                batch.begin();
+            }
+            else {
+                blocking.end();
+                batch.begin();
+            }
+        }
+    }
+
+    public void begin(GLBatch batch)
+    {
+        if(blocking != null) {
             Platform.error("Cannot use multi renderer at same time.");
         }
-        blocked = true;
+        if(blocking == batch) {
+            Platform.error("Cannot begin batches multi times.");
+        }
+        blocking = batch;
     }
 
-    public void end()
+    public void end(GLBatch batch)
     {
-        if(!blocked) {
+        if(blocking == null) {
+            Platform.error("Cannot end batches multi times.");
+        }
+        if(blocking != batch) {
             Platform.error("Cannot use multi renderer at same time.");
         }
-        blocked = false;
+        blocking = null;
     }
 
-    //EFFECTS
-
-    public void rotate(double degree, double x, double y)
-    {
-        mutable.rotation += degree;
-        mutable.lx = x;
-        mutable.ly = y;
-    }
-
-    public void clearRotation()
-    {
-        mutable.rotation = 0;
-        mutable.lx = mutable.ly = 0;
-    }
-
-    public void opacity(double v)
-    {
-        mutable.alpha = v;
-    }
-
-    public void clearOpacity()
-    {
-        mutable.alpha = 1;
-    }
-
-    public void dyeDraw(Color4 v)
-    {
-        mutable.dye = v;
-    }
-
-    public void clearDyeDraw()
-    {
-        mutable.dye = null;
-    }
+    //STATEMENT
 
     public void cacheState()
     {
@@ -151,52 +172,68 @@ public class GL implements GLObject
         mutable.copy(store);
     }
 
-    public State pullState()
+    public State curState()
     {
         return mutable;
     }
 
-    public State copyState()
+    public State copyCurState()
     {
         return new State().copy(mutable);
     }
 
-    public void pushState(State s)
+    public void setCurState(State s)
     {
         mutable = s;
-    }
-
-    public void mirrored(boolean mir)
-    {
-        mutable.mirror = mir;
-    }
-
-    public void color(Color4 c4f)
-    {
-        mutable.colorNow = c4f;
-    }
-
-    public void font(Font2 f2f)
-    {
-        mutable.fontNow = f2f;
-    }
-
-    public void clear()
-    {
-        Gdx.gl.glClearColor(0, 0, 0, 1f);
-        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     public static class State
     {
 
-        double rotation;
-        double lx, ly;
-        double alpha = 1.0;
-        boolean mirror;
-        Color4 dye = Color4.BLACK;
-        Color4 colorNow = Color4.WHITE;
-        Font2 fontNow = null;
+        public double rotation;
+        public double lx, ly;
+        public double alpha = 1.0;
+        public boolean mirror;
+        public Color4 colorNow = Color4.WHITE;
+        public Font2 fontNow = null;
+
+        public void rotate(double degree, double x, double y)
+        {
+            rotation += degree;
+            lx = x;
+            ly = y;
+        }
+
+        public void clearRotation()
+        {
+            rotation = 0;
+            lx = ly = 0;
+        }
+
+        public void opacity(double v)
+        {
+            alpha = v;
+        }
+
+        public void clearOpacity()
+        {
+            alpha = 1;
+        }
+
+        public void mirrored(boolean mir)
+        {
+            mirror = mir;
+        }
+
+        public void color(Color4 c4f)
+        {
+            colorNow = c4f;
+        }
+
+        public void font(Font2 f2f)
+        {
+            fontNow = f2f;
+        }
 
         public State copy(State state)
         {
@@ -205,7 +242,6 @@ public class GL implements GLObject
             ly = state.ly;
             alpha = state.alpha;
             mirror = state.mirror;
-            dye = state.dye;
             colorNow = state.colorNow;
             fontNow = state.fontNow;
             return this;

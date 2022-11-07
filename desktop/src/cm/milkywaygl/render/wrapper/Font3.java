@@ -28,7 +28,7 @@ public class Font3
         double texHeight = GL.gl2.texw(fontsAll);
 
         for(int i = 0; i < numbers.size(); i++) {
-            GL.gl8.drawUV(fontsAll, x + (i * eachWidth), y, eachWidth, height, texEach * numbers.get(i), 0, texEach, texHeight);
+            GL.gl2.dim(fontsAll, x + (i * eachWidth), y, eachWidth, height, texEach * numbers.get(i), 0, texEach, texHeight);
         }
     }
 

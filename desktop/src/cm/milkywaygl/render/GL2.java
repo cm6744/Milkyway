@@ -1,22 +1,18 @@
 package cm.milkywaygl.render;
 
-import cm.milkywaygl.maths.Maths;
+import cm.milkywaygl.inter.GLBatch;
+import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.render.inat.Context;
-import cm.milkywaygl.render.wrapper.Color4;
-import cm.milkywaygl.render.wrapper.Font2;
 import cm.milkywaygl.resource.Path;
 import cm.milkywaygl.util.IntBuffer;
 import cm.milkywaygl.util.IntHolder;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Align;
 
-public class GL2 implements GLObject
+public class GL2 extends GLBatch
 {
 
     GL gl;
@@ -47,18 +43,14 @@ public class GL2 implements GLObject
         }
     }
 
-    public void begin()
+    protected void nbegin()
     {
-        gl.viewPort();
-        gl.begin();
         drawer.begin();
     }
 
-    public void end()
+    protected void nend()
     {
         drawer.end();
-        gl.end();
-        gl.viewPortBack();
     }
 
     public IntBuffer loadTexture(String path)
@@ -89,37 +81,16 @@ public class GL2 implements GLObject
         return _natTex(id).getHeight();
     }
 
-    //gl2 PRE AND END CALLERS
+    /////////////////****///////////////////
 
-    public void draw(IntBuffer reg, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
+    public void vertex(Texture txt, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
     {
-        if(reg.value() == IntHolder.NULL) {
-            return;
-        }
-        draw(_natTex(reg), x, y, x2, y2, u, v, u2, v2);
-    }
-
-    //END REGION
-
-    //DRAW CALLS
-
-    private void draw(Texture txt, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
-    {
+        GL.gl.ensure(this);
         float r = drawer.getColor().r;
         float g = drawer.getColor().g;
         float b = drawer.getColor().b;
         float a = drawer.getColor().a;
-        if(gl.mutable.alpha != 1) {
-            if(gl.mutable.dye != null) {
-                Color cl = gl.mutable.dye._nativeColor;
-                drawer.setColor(cl.r, cl.g, cl.b, a * (float) gl.mutable.alpha);
-            }
-            else {
-                drawer.setColor(r, g, b, a * (float) gl.mutable.alpha);
-            }
-        }
-        //If !enableZoom, xy should not be in width/height, but actualWidth/actualHeight.
-        //If enableZoom, xy should be in width/height, not actualWidth/actualHeight.It will be scaled soon.
+        drawer.setColor(r, g, b, a * (float) gl.mutable.alpha);
         double ny = gl.calcY(y2);
         double nx = gl.calcX(x);
         double w = gl.calcP(x2 - x);
@@ -132,24 +103,41 @@ public class GL2 implements GLObject
         drawer.setColor(r, g, b, a);
     }
 
-    public void drawText(String text, double x, double y, boolean center)
+    public void vertex(IntBuffer reg, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
     {
-        double xin = x, yin = y;
-        //Allow smoothing to font native
-        Font2 f2 = gl.mutable.fontNow;
-        BitmapFont ft = f2._nativeFont;
-        BitmapFont.BitmapFontData bb = ft.getData();
-        if(center) {
-            double yPro = 0;
-            for(int i = 0; i < text.length(); i++) {
-                BitmapFont.Glyph gl = bb.getGlyph(text.charAt(i));
-                if(gl == null) continue;
-                xin -= (gl.width) / 2.0;
-                yPro += gl.height / 2.0;
-            }
-            yin -= (yPro / text.length());
+        if(reg.value() == IntHolder.NULL) {
+            return;
         }
-        ft.draw(drawer, text, (float) gl.calcX(xin), (float) gl.calcY(yin));
+        vertex(_natTex(reg), x, y, x2, y2, u, v, u2, v2);
+    }
+
+    //Not Native Methods
+
+    public void dim(IntBuffer id, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    {
+        vertex(id, x, y, x + w, y + h, u, v, u + uw, v + vh);
+    }
+
+    public void dim01(IntBuffer id, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    {
+        double wi = texw(id);
+        double hi = texh(id);
+        dim(id, x, y, w, h, u * wi, v * hi, wi * uw, hi * vh);
+    }
+
+    public void dim(IntBuffer id, double x, double y, double w, double h)
+    {
+        dim(id, x, y, w, h, 0, 0, texw(id), texh(id));
+    }
+
+    public void dim(IntBuffer id, Box4 b)
+    {
+        dim(id, b.xc(), b.yc(), b.width(), b.height());
+    }
+
+    public void dim(IntBuffer id, Box4 b, Box4 uv)
+    {
+        dim(id, b.xc(), b.yc(), b.width(), b.height(), uv.xc(), uv.yc(), uv.width(), uv.height());
     }
 
 }

@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 public class Font2
 {
 
+    public double size;
     public BitmapFont _nativeFont;
 
-    Font2(BitmapFont nat)
+    Font2(BitmapFont nat, double siz)
     {
         _nativeFont = nat;
+        size = siz;
     }
 
 }

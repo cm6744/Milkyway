@@ -1,4 +1,4 @@
-package cm.milkywaylib.linkdown;
+package cm.milkywaylib.util;
 
 import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.maths.check.Box4;
@@ -53,9 +53,9 @@ public class AnimatedRenderer
     {
         GL.gl.cacheState();
         if(mirror) {
-            GL.gl.mirrored(true);
+            GL.gl.curState().mirrored(true);
         }
-        GL.gl8.drawUV(texture, x, y, w, h, index * tileW, chosenLine * tileH, tileW, tileH);
+        GL.gl2.dim(texture, x, y, w, h, index * tileW, chosenLine * tileH, tileW, tileH);
         GL.gl.readState();
     }
 

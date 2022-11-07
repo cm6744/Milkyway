@@ -11,30 +11,33 @@ import cm.milkywaygl.render.wrapper.Font2;
 import cm.milkywaygl.render.wrapper.FontType;
 import cm.milkywaygl.sound.SoundDevice;
 import cm.milkywaygl.text.I18n;
+import cm.milkywaygl.text.JsonEntry;
 import cm.milkywaygl.text.JsonFile;
 import cm.milkywaylib.linklib.SceneManager;
 
 public class Main
 {
 
-    static SceneMine sceneMine;
+    static int defFps;
 
     public static void main(String[] args)
     {
         JsonFile jf = JsonFile.load("property.json");
+        jf.openReading();
         Preference pref = new Preference();
-        String lang = jf.getString("language");
-        pref.width = jf.getInt("width");
-        pref.height = jf.getInt("height");
-        pref.winWidth = jf.getInt("win-width");
-        pref.winHeight = jf.getInt("win-height");
-        pref.cursor = jf.getString("cursor");
-        pref.icon = jf.getString("icon");
-        pref.title = jf.getString("title");
+        String lang = jf.entry("language").toString();
+        pref.width = jf.entry("width").toInt();
+        pref.height = jf.entry("height").toInt();
+        pref.winWidth = jf.entry("win-width").toInt();
+        pref.winHeight = jf.entry("win-height").toInt();
+        pref.cursor = jf.entry("cursor").toString();
+        pref.icon = jf.entry("icon").toString();
+        pref.title = jf.entry("title").toString();
+        defFps = jf.entry("fps").toInt();
 
         TaskCaller.register(GL::create, TaskCaller.INIT);
         TaskCaller.register(() -> {
-            I18n.load("texts/" + lang + ".json");
+            //I18n.load("texts/" + lang + ".json");
             Assets.loadAll();
             SceneManager.scene(new SceneLoad());
             SoundDevice bg = new SoundDevice();

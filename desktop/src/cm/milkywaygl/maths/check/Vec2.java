@@ -86,4 +86,10 @@ public class Vec2
         return VMaths.vectorY(x, speed, degree);
     }
 
+    public Vec2 copy(Vec2 vec)
+    {
+        vec(vec.speed(), vec.degree());
+        return this;
+    }
+
 }

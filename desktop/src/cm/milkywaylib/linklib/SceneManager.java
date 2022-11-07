@@ -5,16 +5,28 @@ public class SceneManager
 
     static Scene nowScene;
 
-    public static void scene(Scene s)
+    public static void withoutTurning(Scene s)
     {
         nowScene = s;
-        s.init();
+        nowScene.init();
+    }
+
+    public static void scene(Scene s)
+    {
+        if(nowScene != null) {
+            nowScene.shadow.turnIn(s);
+        }
+        else {
+            withoutTurning(s);
+        }
     }
 
     public static void tick()
     {
         if(nowScene != null) {
+            //promote after ticking
             nowScene.tick();
+            nowScene.shadow().tickTurning();
         }
     }
 
@@ -22,6 +34,7 @@ public class SceneManager
     {
         if(nowScene != null) {
             nowScene.render();
+            nowScene.shadow().renderTurning();
         }
     }
 

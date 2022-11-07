@@ -1,19 +1,22 @@
 package cm.milkywaylib.linklib;
 
-import cm.milkywaygl.GLRenderable;
+import cm.milkywaygl.inter.GLRenderable;
+import cm.milkywaygl.inter.GLTimeline;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.maths.check.Effect;
 import cm.milkywaygl.maths.check.Vec2;
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.util.IntBuffer;
 
-public class RenderBuffer implements GLRenderable
+public class RenderBuffer extends GLTimeline implements GLRenderable
 {
 
     protected IntBuffer texture;
     protected Box4 box4;
     protected Vec2 vec2;
     protected Effect effect;
+    protected int time;
+    protected boolean forRemove;
 
     public RenderBuffer()
     {
@@ -22,7 +25,7 @@ public class RenderBuffer implements GLRenderable
         effect = Effect.normal();
     }
 
-    public void tick()
+    public void tickThen()
     {
         box4().loc(vec2.applyX(box4.x()), vec2.applyY(box4.y()));
     }
@@ -30,15 +33,15 @@ public class RenderBuffer implements GLRenderable
     public void render()
     {
         GL.gl.cacheState();
-        GL.gl.rotate(effect.rotation(), box4.x(), box4.y());
-        GL.gl.opacity(effect.opacity());
-        implRender();
+        GL.gl.curState().rotate(effect.rotation(), box4.x(), box4.y());
+        GL.gl.curState().opacity(effect.opacity());
+        renderThen();
         GL.gl.readState();
     }
 
-    public void implRender()
+    public void renderThen()
     {
-        GL.gl8.draw(texture, box4.xc(), box4.yc(), box4.width(), box4.height());
+        GL.gl2.dim(texture, box4.xc(), box4.yc(), box4.width(), box4.height());
     }
 
     public void pushTexture(IntBuffer tex)
@@ -64,6 +67,21 @@ public class RenderBuffer implements GLRenderable
     public Effect effect()
     {
         return effect;
+    }
+
+    public void cancelRemove()
+    {
+        forRemove = false;
+    }
+
+    public void remove()
+    {
+        forRemove = true;
+    }
+
+    public boolean isForRemove()
+    {
+        return forRemove;
     }
 
 }

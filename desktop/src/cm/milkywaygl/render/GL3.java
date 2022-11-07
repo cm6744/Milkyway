@@ -1,5 +1,6 @@
 package cm.milkywaygl.render;
 
+import cm.milkywaygl.inter.GLBatch;
 import cm.milkywaygl.render.inat.Context;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.util.IntBuffer;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-public class GL3 implements GLObject
+public class GL3 extends GLBatch
 {
 
     private static final BoundingBox bbTest = new BoundingBox();
@@ -52,22 +53,19 @@ public class GL3 implements GLObject
         }
     }
 
-    public void begin()
+    protected void nbegin()
     {
-        gl.viewPort();
-        gl.begin();
         batch.begin(camera);
     }
 
-    public void end()
+    protected void nend()
     {
         batch.end();
-        gl.end();
-        gl.viewPortBack();
     }
 
     public void render(IntBuffer id, double x, double y, double z)
     {
+        GL.gl.ensure(this);
         ModelInstance ins = instances.get(id);
         ins.transform.setToTranslation((float) x, (float) y, (float) z);
 

@@ -1,5 +1,8 @@
 package cm.milkywaygl.maths.check;
 
+import cm.milkywaygl.Platform;
+import cm.milkywaygl.maths.VMaths;
+
 public abstract class Box4
 {
 
@@ -184,7 +187,21 @@ public abstract class Box4
         return ((width2 < x2 || width2 > x1) && (height2 < y2 || height2 > y1) && (width1 < x1 || width1 > x2) && (height1 < y1 || height1 > y2));
     }
 
-    public abstract Box4 copy();
+    public Box4 rotate(double cex, double cey, double degree)
+    {
+        double dist = VMaths.distanceBetweenAB(x(), y(), cex, cey);
+        double deg = VMaths.degreeBetweenAB(x(), y(), cex, cey);
+        deg += degree;
+        loc(VMaths.vectorX(cex, dist, deg), VMaths.vectorY(cey, dist, deg));
+        return this;
+    }
+
+    public Box4 copy(Box4 box)
+    {
+        loc(box.x(), box.y());
+        setSize(box.width(), box.height());
+        return this;
+    }
 
     private static class BoxOffset extends Box4
     {
@@ -197,11 +214,6 @@ public abstract class Box4
         public double y()
         {
             return y + height / 2;
-        }
-
-        public Box4 copy()
-        {
-            return Box4.offset(x, y, width, height);
         }
 
     }
@@ -217,11 +229,6 @@ public abstract class Box4
         public double y()
         {
             return y;
-        }
-
-        public Box4 copy()
-        {
-            return Box4.inset(x, y, width, height);
         }
 
     }

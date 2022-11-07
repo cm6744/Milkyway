@@ -1,6 +1,6 @@
 package cm.milkywaylib.linklib;
 
-import cm.milkywaygl.GLRenderable;
+import cm.milkywaygl.inter.GLRenderable;
 import cm.milkywaygl.maths.check.Effect;
 import cm.milkywaygl.maths.check.Vec3;
 import cm.milkywaygl.render.GL;
@@ -29,7 +29,7 @@ public class ModelBuffer implements GLRenderable
     public void render()
     {
         GL.gl.cacheState();
-        GL.gl.opacity(effect.opacity());
+        GL.gl.curState().opacity(effect.opacity());
         GL.gl3.render(bind, pos.x(), pos.y(), pos.z());
         GL.gl.readState();
     }

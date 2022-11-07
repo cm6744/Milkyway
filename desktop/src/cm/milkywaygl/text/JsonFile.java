@@ -1,47 +1,66 @@
 package cm.milkywaygl.text;
 
+import cm.milkywaygl.Platform;
 import cm.milkywaygl.resource.Path;
+import cm.milkywaygl.resource.Resource;
+import cm.milkywaygl.util.container.List;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class JsonFile
 {
 
-    private final JsonValue nativeJson;
+    private final String path;
+    private JsonValue nativeJson;
+    private boolean openedRd;
 
-    private JsonFile(JsonValue nat)
+    private JsonFile(String pth)
     {
-        nativeJson = nat;
+        path = pth;
     }
 
     public static JsonFile load(String path)
     {
-        return new JsonFile(new JsonReader().parse(Path.readerJar(path)));
+        return new JsonFile(path);
     }
 
-    public JsonFile getObject(String key)
+    public void openReading()
     {
-        return new JsonFile(nativeJson.getChild(key));
+        if(!openedRd) {
+            nativeJson = new JsonReader().parse(Path.readerJar(path));
+        }
+        openedRd = true;
     }
 
-    public int getInt(String key)
-    {
-        return nativeJson.getInt(key);
-    }
+    //GET
 
-    public double getDouble(String key)
+    public JsonEntry entry(String key)
     {
-        return nativeJson.getDouble(key);
-    }
+        openReading();
 
-    public String getString(String key)
-    {
-        return nativeJson.getString(key);
-    }
+        JsonValue v1 = nativeJson.get(key);
+        if(v1 == null) {
+            return new JsonEntry(null);
+        }
 
-    public boolean getBool(String key)
-    {
-        return nativeJson.getBoolean(key);
+        if(v1.isString()) {
+            return new JsonEntry(v1.asString());
+        }
+        else if(v1.isDouble()) {
+            return new JsonEntry(v1.asDouble());
+        }
+        else if(v1.isNumber()) {
+            return new JsonEntry(v1.asInt());
+        }
+        else if(v1.isBoolean()) {
+            return new JsonEntry(v1.asBoolean());
+        }
+
+        return new JsonEntry(null);
     }
 
 }

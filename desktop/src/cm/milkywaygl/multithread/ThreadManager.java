@@ -1,57 +1,58 @@
 package cm.milkywaygl.multithread;
 
+import cm.milkywaygl.inter.GLTickable;
 import cm.milkywaygl.util.container.List;
+import cm.milkywaygl.util.container.Map;
 
 public class ThreadManager
 {
 
-    static List<RThread> threads = new List<>();
+    static Map<GLTickable, RThread> threads = new Map<>();
 
     //put up a new thread to run ThreadTask
-    public static void join(ThreadTask r)
+    public static void join(GLTickable r)
     {
         RThread thread = new RThread(r);
-        r.id = threads.size();
-        threads.add(thread);
+        threads.put(r, thread);
     }
 
     //return start() is invoked
-    public static boolean isStarted(ThreadTask r)
+    public static boolean isStarted(GLTickable r)
     {
-        return threads.get(r.id).isStarted;
+        return threads.get(r).isStarted;
     }
 
     //start the thread
-    public static void start(ThreadTask r)
+    public static void start(GLTickable r)
     {
-        threads.get(r.id).start();
+        threads.get(r).start();
     }
 
     //stop the thread
     //if ThreadTask.run is a while-loop task
     //use while(ThreadManager.isNotDisposed) {...}
-    public static void dispose(ThreadTask r)
+    public static void dispose(GLTickable r)
     {
-        threads.get(r.id).dispose();
+        threads.get(r).dispose();
     }
 
-    public static boolean isNotDisposed(ThreadTask r)
+    public static boolean isNotDisposed(GLTickable r)
     {
-        return !threads.get(r.id).isInterrupted();
+        return !threads.get(r).isInterrupted();
     }
 
-    public static void sleep(ThreadTask r, int ms)
+    public static void sleep(GLTickable r, int ms)
     {
-        threads.get(r.id).sleep(ms);
+        threads.get(r).sleep(ms);
     }
 
     private static class RThread extends Thread
     {
 
-        ThreadTask task;
+        GLTickable task;
         boolean isStarted;
 
-        public RThread(ThreadTask r)
+        public RThread(GLTickable r)
         {
             task = r;
         }
@@ -69,7 +70,7 @@ public class ThreadManager
 
         public void run()
         {
-            task.update();
+            task.tick();
         }
 
         public void sleep(int ms)

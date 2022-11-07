@@ -79,6 +79,13 @@ public class List<E>
         objects[size++] = obj;
     }
 
+    public void addAll(E[] obj)
+    {
+        for(int i = 0; i < obj.length; i++) {
+            add(obj[i]);
+        }
+    }
+
     public E get(int index)
     {
         if(checkIndex(index)) {

@@ -2,8 +2,6 @@ package cm.milkywaylib.linkdown;
 
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.render.nnat.InputMap;
-import cm.milkywaygl.render.wrapper.Color4;
-import cm.milkywaygl.render.wrapper.Font2;
 import cm.milkywaygl.render.wrapper.Keys;
 import cm.milkywaylib.linklib.RenderBuffer;
 
@@ -12,18 +10,8 @@ public class BufButton extends RenderBuffer
 
     int countDown;
     String text;
-    Font2 font;
-    Font2 shadow;
-    int offset;
 
-    public void font(Font2 f, Font2 sd, int shOffs)
-    {
-        font = f;
-        shadow = sd;
-        offset = shOffs;
-    }
-
-    public void implRender()
+    public void renderThen()
     {
         double x = box4.xc();
         double y = box4.yc();
@@ -33,25 +21,17 @@ public class BufButton extends RenderBuffer
         countDown--;
 
         if(isInDownState()) {
-            GL.gl8.drawUVPer(texture, x, y, w, h, 0, 2 / 3.0, 1, 1 / 3.0);
+            GL.gl2.dim01(texture, x, y, w, h, 0, 2 / 3.0, 1, 1 / 3.0);
         }
         else if(hangOn()) {
-            GL.gl8.drawUVPer(texture, x, y, w, h, 0, 1 / 3.0, 1, 1 / 3.0);
+            GL.gl2.dim01(texture, x, y, w, h, 0, 1 / 3.0, 1, 1 / 3.0);
         }
         else {
-            GL.gl8.drawUVPer(texture, x, y, w, h, 0, 0, 1, 1 / 3.0);
+            GL.gl2.dim01(texture, x, y, w, h, 0, 0, 1, 1 / 3.0);
         }
 
         if(text != null) {
-            if(font != null) {
-                GL.gl.font(font);
-            }
-            if(shadow != null) {
-                GL.gl8.drawTextShadowed(text, box4.x(), box4.y(), offset, shadow, true);
-            }
-            else {
-                GL.gl8.drawText(text, box4.x(), box4.y(), true);
-            }
+            GL.gl2f.text(text, box4.x(), box4.y(), true);
         }
     }
 

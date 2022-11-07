@@ -1,10 +1,11 @@
-package cm.milkywaylib.linkdown.stg;
+package cm.milkywaylib.stg;
 
 import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.render.nnat.InputMap;
 import cm.milkywaygl.render.wrapper.Keys;
-import cm.milkywaylib.linkdown.AnimatedRenderer;
+import cm.milkywaylib.linklib.RenderBuffer;
+import cm.milkywaylib.util.AnimatedRenderer;
 import cm.milkywaylib.linkdown.BufBound;
 
 public class BufPlayer extends BufBound
@@ -25,6 +26,9 @@ public class BufPlayer extends BufBound
     boolean right;
     boolean shift;
 
+    int dieTime;
+    int noBoundTime;
+
     public BufPlayer(double speed, double shift, BufBound point, AnimatedRenderer stay, AnimatedRenderer move, Box4 moveDim)
     {
         stayTimeline = stay;
@@ -36,9 +40,12 @@ public class BufPlayer extends BufBound
         moveDimension = moveDim;
     }
 
-    public void tick()
+    public void tickThen()
     {
-        super.tick();
+        super.tickThen();
+
+        dieTime--;
+        noBoundTime--;
 
         up = InputMap.keyOn(Keys.UP);
         down = InputMap.keyOn(Keys.DOWN);
@@ -98,24 +105,40 @@ public class BufPlayer extends BufBound
 
         stayTimeline.tick();
         moveTimeline.tick();
+
+        boundPoint.box4().loc(box4.x(), box4.y());
     }
 
-    public void implRender()
+    public void renderThen()
     {
-        if(left) {
-            moveTimeline.render(box4, false);
-        }
-        else if(right) {
-            moveTimeline.render(box4, true);
-        }
-        else {
-            stayTimeline.render(box4, false);
+        if(dieTime <= 0 && (noBoundTime <= 0 || (noBoundTime % 5 != 0))) {
+            if(left) {
+                moveTimeline.render(box4, false);
+            }
+            else if(right) {
+                moveTimeline.render(box4, true);
+            }
+            else {
+                stayTimeline.render(box4, false);
+            }
+            boundPoint.render();
         }
     }
 
     public Box4 bound()
     {
         return boundPoint.bound();
+    }
+
+    public void beShot()
+    {
+        dieTime = 10;
+        noBoundTime = 300;
+    }
+
+    public boolean hasBound()
+    {
+        return noBoundTime <= 0;
     }
 
 }

@@ -35,7 +35,9 @@ public class Context
         config.setWindowedMode(winWidth, winHeight);
         config.setResizable(false);
         config.setTitle(pref.title);
-        config.setDecorated(!fullScreen);
+        if(fullScreen) {
+            config.setDecorated(false);
+        }
         config.useVsync(true);
         config.setIdleFPS(pref.fps);
         config.setForegroundFPS(pref.fps);
@@ -60,7 +62,7 @@ public class Context
         }, TaskCaller.INIT);
 
         Platform.log("Window was created.");
-        new Lwjgl3Application(new BuiltinNative(), config);
+        new Lwjgl3Application(new BuiltinListener(), config);
     }
 
     public static double width()
