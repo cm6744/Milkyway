@@ -1,8 +1,8 @@
 package cm.milkywaygl.render;
 
-import cm.milkywaygl.inter.GLBatch;
+import cm.milkywaygl.interfac.GLBatch;
 import cm.milkywaygl.Platform;
-import cm.milkywaygl.render.inat.Context;
+import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.render.wrapper.Font2;
 import cm.milkywaygl.render.wrapper.FontType;

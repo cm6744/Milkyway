@@ -1,4 +1,4 @@
-package cm.milkywaylib.stg;
+package cm.milkywaytype.stg;
 
 import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.maths.check.Box4;
@@ -36,7 +36,7 @@ public class BufBullet extends BufBound
         }
     }
 
-    public void renderThen()
+    public void renderThen(double x, double y, double w, double h)
     {
         GL.gl.curState().opacity(time() / 20.0);
         GL.gl2.dim(TEXTURE, box4, uv);

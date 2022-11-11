@@ -1,11 +1,7 @@
 package cm.milkywaylib.linklib;
 
-import cm.milkywaygl.inter.GLRenderable;
-import cm.milkywaygl.inter.GLTimeline;
-import cm.milkywaygl.maths.LimitValue;
-import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.inat.Context;
-import cm.milkywaygl.render.wrapper.Color4;
+import cm.milkywaygl.interfac.GLRenderable;
+import cm.milkywaygl.interfac.GLTimeline;
 
 public class Scene extends GLTimeline implements GLRenderable
 {

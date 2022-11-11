@@ -1,6 +1,6 @@
 package cm.milkywaylib.linklib;
 
-import cm.milkywaygl.inter.GLRenderable;
+import cm.milkywaygl.interfac.GLRenderable;
 import cm.milkywaygl.maths.check.Effect;
 import cm.milkywaygl.maths.check.Vec3;
 import cm.milkywaygl.render.GL;

@@ -1,6 +1,6 @@
 package cm.milkywaygl.resource;
 
-import cm.milkywaygl.inter.GLTickable;
+import cm.milkywaygl.interfac.GLTickable;
 import cm.milkywaygl.Platform;
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.util.IntBuffer;

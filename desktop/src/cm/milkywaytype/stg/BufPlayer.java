@@ -1,10 +1,9 @@
-package cm.milkywaylib.stg;
+package cm.milkywaytype.stg;
 
 import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.maths.check.Box4;
-import cm.milkywaygl.render.nnat.InputMap;
-import cm.milkywaygl.render.wrapper.Keys;
-import cm.milkywaylib.linklib.RenderBuffer;
+import cm.milkywaygl.input.InputMap;
+import cm.milkywaygl.input.Key;
 import cm.milkywaylib.util.AnimatedRenderer;
 import cm.milkywaylib.linkdown.BufBound;
 
@@ -29,15 +28,30 @@ public class BufPlayer extends BufBound
     int dieTime;
     int noBoundTime;
 
-    public BufPlayer(double speed, double shift, BufBound point, AnimatedRenderer stay, AnimatedRenderer move, Box4 moveDim)
+    Key kr = Key.key("right");
+    Key kl = Key.key("left");
+    Key ku = Key.key("up");
+    Key kd = Key.key("down");
+    Key ks = Key.key("shift");
+
+    public BufPlayer(double speed, double shiftSped, BufBound point, AnimatedRenderer stay, AnimatedRenderer move, Box4 moveDim)
     {
         stayTimeline = stay;
         moveTimeline = move;
         defaultSpeed = speed;
-        shiftSpeed = shift;
+        shiftSpeed = shiftSped;
         boundPoint = point;
         sizeMax = point.box4().width();
         moveDimension = moveDim;
+    }
+
+    public void keyBind(Key r, Key l, Key u, Key d, Key s)
+    {
+        kr = r;
+        kl = l;
+        ku = u;
+        kd = d;
+        ks = s;
     }
 
     public void tickThen()
@@ -47,11 +61,11 @@ public class BufPlayer extends BufBound
         dieTime--;
         noBoundTime--;
 
-        up = InputMap.keyOn(Keys.UP);
-        down = InputMap.keyOn(Keys.DOWN);
-        left = InputMap.keyOn(Keys.LEFT);
-        right = InputMap.keyOn(Keys.RIGHT);
-        shift = InputMap.keyOn(Keys.SHIFT);
+        up = InputMap.isOn(ku);
+        down = InputMap.isOn(kd);
+        left = InputMap.isOn(kl);
+        right = InputMap.isOn(kr);
+        shift = InputMap.isOn(ks);
 
         double deg = -90;
 
@@ -109,7 +123,7 @@ public class BufPlayer extends BufBound
         boundPoint.box4().loc(box4.x(), box4.y());
     }
 
-    public void renderThen()
+    public void renderThen(double x, double y, double w, double h)
     {
         if(dieTime <= 0 && (noBoundTime <= 0 || (noBoundTime % 5 != 0))) {
             if(left) {

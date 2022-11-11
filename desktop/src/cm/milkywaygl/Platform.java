@@ -25,7 +25,7 @@ public class Platform
         return System.nanoTime();
     }
 
-    public static long getTickNs()
+    public static long getTickMill()
     {
         return System.currentTimeMillis();
     }

@@ -1,9 +1,9 @@
 package cm.milkywaylib.linkdown;
 
 import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.nnat.InputMap;
+import cm.milkywaygl.input.InputMap;
 import cm.milkywaygl.render.wrapper.Color4;
-import cm.milkywaygl.render.wrapper.Keys;
+import cm.milkywaygl.input.Key;
 import cm.milkywaygl.text.JsonFile;
 import cm.milkywaygl.util.container.List;
 import cm.milkywaylib.linklib.RenderBuffer;
@@ -13,11 +13,11 @@ public class BufDialog extends RenderBuffer
 
     List<String> text = new List<>();
     Color4 color;
-    int key = Keys.Z;
+    Key key = Key.key("z");
 
     boolean disposed = false;
 
-    public void setExitKey(int code)
+    public void setExitKey(Key code)
     {
         key = code;
     }
@@ -26,12 +26,12 @@ public class BufDialog extends RenderBuffer
     {
         super.tickThen();
 
-        if(InputMap.keyClick(key)) {
+        if(InputMap.isClick(key)) {
             disposed = true;
         }
     }
 
-    public void renderThen()
+    public void renderThen(double x, double y, double w, double h)
     {
         if(disposed) {
             return;

@@ -1,7 +1,6 @@
-package cm.milkywaylib.stg;
+package cm.milkywaytype.stg;
 
 import cm.milkywaygl.maths.VMaths;
-import cm.milkywaygl.util.IntBuffer;
 
 public class Bullets
 {

@@ -1,4 +1,4 @@
-package cm.milkywaygl.render.inat;
+package cm.milkywaygl.render.nativegl;
 
 public class Preference
 {

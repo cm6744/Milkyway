@@ -1,13 +1,10 @@
-package cm.milkywaygl.render.nnat;
+package cm.milkywaygl.input;
 
-public class InputCallback
+import cm.milkywaygl.Platform;
+import cm.milkywaygl.TaskCaller;
+
+public class SimpleInputCallback extends InputCallback
 {
-
-    public InputCallback()
-    {
-        //Lambda usage.
-        TaskCaller.register(InputMap::keyStateUpdate, TaskCaller.TICK);
-    }
 
     public void keyTyped(int code)
     {
@@ -27,6 +24,7 @@ public class InputCallback
 
     public void inputText(String text)
     {
+        InputMap.inputString = text;
     }
 
     public void mouseClicked(int code)
@@ -43,10 +41,6 @@ public class InputCallback
             return;
         }
         InputMap.mouseState[code] = false;
-    }
-
-    public void mouseScroll(double value)
-    {
     }
 
     public void mouseMove(double x, double y)

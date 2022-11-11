@@ -1,6 +1,6 @@
 package cm.milkywaygl.util.container;
 
-import cm.milkywaygl.inter.GLReturnVal;
+import cm.milkywaygl.interfac.GLReturnVal;
 
 public class Pool<E>
 {

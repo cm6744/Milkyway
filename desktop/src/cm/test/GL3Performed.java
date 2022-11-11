@@ -1,7 +1,7 @@
-package cm.milkywaygl.render;
+package cm.test;
 
-import cm.milkywaygl.inter.GLBatch;
-import cm.milkywaygl.render.nnat.TaskCaller;
+import cm.milkywaygl.Platform;
+import cm.milkywaygl.render.GL;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.util.IntBuffer;
 import cm.milkywaygl.util.container.List;
@@ -28,7 +28,7 @@ public class GL3Performed
     {
         GL.gl3.cameraPos(0, 0, 10);
         GL.gl3.cameraLookPos(-7, 0, 0);
-        GL.gl3.cameraSight(1, 5800);
+        GL.gl3.cameraSight(1, 5800, 3000);
         md = GL.gl3.genModel(700, 420, 5);
         GL.gl3.modelBindTex(md, Assets.win);
         roof = GL.gl3.genModel(700, 2, 420);
@@ -84,30 +84,13 @@ public class GL3Performed
         }
     }
 
-    public void dispose()
-    {
-    }
-
-    public void begin()
-    {
-
-    }
-
-    public void flush()
-    {
-
-    }
-
-    public void end()
-    {
-
-    }
-
     public void render()
     {
+        //long time = Platform.getTickMill();
         for(int i = 0; i < inss.size(); i++) {
             inss.get(i).render();
         }
+        //System.out.println(Platform.getTickMill() - time);
     }
 
 }

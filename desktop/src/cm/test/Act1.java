@@ -1,10 +1,8 @@
 package cm.test;
 
 import cm.milkywaygl.maths.Maths;
-import cm.milkywaygl.maths.VMaths;
-import cm.milkywaygl.render.nnat.TaskCaller;
-import cm.milkywaylib.stg.Action;
-import cm.milkywaylib.stg.BufBullet;
+import cm.milkywaytype.stg.Action;
+import cm.milkywaytype.stg.BufBullet;
 
 public class Act1 extends Action<BufBullet>
 {

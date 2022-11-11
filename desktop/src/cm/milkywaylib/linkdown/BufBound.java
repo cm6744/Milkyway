@@ -6,13 +6,7 @@ import cm.milkywaylib.linklib.RenderBuffer;
 public class BufBound extends RenderBuffer
 {
 
-    //ONLY WIDTHS
-    protected Box4 bound;
-
-    public BufBound()
-    {
-        bound = Box4.normal();
-    }
+    protected Box4 bound = Box4.normal();
 
     public Box4 bound()
     {

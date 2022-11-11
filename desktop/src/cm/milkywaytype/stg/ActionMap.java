@@ -1,4 +1,4 @@
-package cm.milkywaylib.stg;
+package cm.milkywaytype.stg;
 
 import cm.milkywaygl.util.container.List;
 

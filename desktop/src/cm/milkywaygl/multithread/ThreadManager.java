@@ -1,7 +1,6 @@
 package cm.milkywaygl.multithread;
 
-import cm.milkywaygl.inter.GLTickable;
-import cm.milkywaygl.util.container.List;
+import cm.milkywaygl.interfac.GLTickable;
 import cm.milkywaygl.util.container.Map;
 
 public class ThreadManager

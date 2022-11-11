@@ -1,6 +1,6 @@
-package cm.milkywaylib.stg;
+package cm.milkywaytype.stg;
 
-import cm.milkywaygl.inter.GLTimeline;
+import cm.milkywaygl.interfac.GLTimeline;
 
 public class Action<E> extends GLTimeline
 {

@@ -1,7 +1,5 @@
-package cm.milkywaylib.stg;
+package cm.milkywaytype.stg;
 
-import cm.milkywaygl.inter.GLRenderable;
-import cm.milkywaygl.inter.GLTimeline;
 import cm.milkywaygl.util.container.List;
 import cm.milkywaygl.util.container.Map;
 import cm.milkywaygl.util.container.Pool;

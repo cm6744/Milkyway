@@ -1,7 +1,9 @@
 package cm.milkywaylib.linklib;
 
-import cm.milkywaygl.inter.GLRenderable;
-import cm.milkywaygl.inter.GLTimeline;
+import cm.milkywaygl.Platform;
+import cm.milkywaygl.TaskCaller;
+import cm.milkywaygl.interfac.GLRenderable;
+import cm.milkywaygl.interfac.GLTimeline;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.maths.check.Effect;
 import cm.milkywaygl.maths.check.Vec2;
@@ -12,17 +14,17 @@ public class RenderBuffer extends GLTimeline implements GLRenderable
 {
 
     protected IntBuffer texture;
-    protected Box4 box4;
-    protected Vec2 vec2;
-    protected Effect effect;
+    protected Box4 box4 = Box4.normal();
+    protected Vec2 vec2 = Vec2.normal();
+    protected Effect effect = Effect.normal();
     protected int time;
     protected boolean forRemove;
 
     public RenderBuffer()
     {
-        box4 = Box4.normal();
-        vec2 = Vec2.normal();
-        effect = Effect.normal();
+        if(!TaskCaller.isPreInitialized()) {
+            Platform.error("cannot create buffer before pre-init end!");
+        }
     }
 
     public void tickThen()
@@ -35,13 +37,19 @@ public class RenderBuffer extends GLTimeline implements GLRenderable
         GL.gl.cacheState();
         GL.gl.curState().rotate(effect.rotation(), box4.x(), box4.y());
         GL.gl.curState().opacity(effect.opacity());
-        renderThen();
+        double x = box4.xc();
+        double y = box4.yc();
+        double w = box4.width();
+        double h = box4.height();
+        renderThen(x, y, w, h);
         GL.gl.readState();
     }
 
-    public void renderThen()
+    public void renderThen(double x, double y, double w, double h)
     {
-        GL.gl2.dim(texture, box4.xc(), box4.yc(), box4.width(), box4.height());
+        if(texture != null) {
+            GL.gl2.dim(texture, x, y, w, h);
+        }
     }
 
     public void pushTexture(IntBuffer tex)

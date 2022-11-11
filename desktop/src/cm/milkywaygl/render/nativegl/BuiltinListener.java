@@ -1,6 +1,6 @@
-package cm.milkywaygl.render.inat;
+package cm.milkywaygl.render.nativegl;
 
-import cm.milkywaygl.render.nnat.TaskCaller;
+import cm.milkywaygl.TaskCaller;
 import com.badlogic.gdx.ApplicationListener;
 
 class BuiltinListener implements ApplicationListener

@@ -2,7 +2,7 @@ package cm.milkywaylib.linklib;
 
 import cm.milkywaygl.maths.LimitValue;
 import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.inat.Context;
+import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.render.wrapper.Color4;
 
 public class Shadow

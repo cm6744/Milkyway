@@ -1,4 +1,4 @@
-package cm.milkywaygl.inter;
+package cm.milkywaygl.interfac;
 
 public abstract class GLTimeline implements GLTickable
 {

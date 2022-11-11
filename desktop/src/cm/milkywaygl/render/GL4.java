@@ -1,10 +1,11 @@
 package cm.milkywaygl.render;
 
-import cm.milkywaygl.inter.GLBatch;
+import cm.milkywaygl.interfac.GLBatch;
 import cm.milkywaygl.maths.check.Box4;
+import cm.milkywaygl.render.nativegl.Context;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class GL4 extends GLBatch
@@ -12,6 +13,7 @@ public class GL4 extends GLBatch
 
     GL gl;
     ShapeRenderer renderer;
+    OrthographicCamera camera;
 
     public GL4(GL g)
     {
@@ -22,6 +24,10 @@ public class GL4 extends GLBatch
     {
         renderer = new ShapeRenderer();
         renderer.setAutoShapeType(true);
+        camera = new OrthographicCamera((float) Context.width(), (float) Context.height());
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.update();
+        renderer.getProjectionMatrix().set(camera.combined);
     }
 
     public void dispose()
@@ -36,7 +42,7 @@ public class GL4 extends GLBatch
 
     protected void nend()
     {
-        //blend, it.
+        //blend, it
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         renderer.end();
         Gdx.graphics.getGL20().glDisable(GL20.GL_BLEND);

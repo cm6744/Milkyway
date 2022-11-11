@@ -1,7 +1,7 @@
 package cm.milkywaygl.sound;
 
 import cm.milkywaygl.Platform;
-import cm.milkywaygl.inter.GLTickable;
+import cm.milkywaygl.interfac.GLTickable;
 import cm.milkywaygl.multithread.ThreadManager;
 import cm.milkywaygl.resource.Resource;
 import cm.milkywaygl.resource.StreamManager;

@@ -1,8 +1,12 @@
-package cm.milkywaygl.render.inat;
+package cm.milkywaygl.render.nativegl;
 
 import cm.milkywaygl.Platform;
-import cm.milkywaygl.render.nnat.InputCallback;
-import cm.milkywaygl.render.nnat.TaskCaller;
+import cm.milkywaygl.input.InputCallback;
+import cm.milkywaygl.input.InputMap;
+import cm.milkywaygl.input.Key;
+import cm.milkywaygl.input.SimpleInputCallback;
+import cm.milkywaygl.TaskCaller;
+import cm.milkywaygl.render.GL;
 import cm.milkywaygl.resource.Path;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -19,6 +23,7 @@ public class Context
     static int winHeight;
     static boolean fullScreen;
     static Preference pref;
+    static BuiltinInput input;
 
     static Lwjgl3ApplicationConfiguration config;
 
@@ -54,12 +59,34 @@ public class Context
         }
 
         TaskCaller.register(() -> {
+            //set cursor
             if(pref.cursor != null) {
                 Pixmap pm = new Pixmap(Path._libJar(pref.cursor));
-                Gdx.graphics.setCursor(Gdx.graphics.newCursor(pm, pm.getWidth() / 2, pm.getHeight() / 2));
+                Gdx.graphics.setCursor(
+                        Gdx.graphics.newCursor(
+                                pm,
+                                pm.getWidth() / 2,
+                                pm.getHeight() / 2
+                        )
+                );
             }
-            Gdx.input.setInputProcessor(new BuiltinInput(callback));
-        }, TaskCaller.INIT);
+            //create input
+            input = new BuiltinInput();
+            input.register(new SimpleInputCallback());
+            Gdx.input.setInputProcessor(input);
+            Platform.log("Input collector created.");
+            //create GL
+            GL.create();
+
+        }, TaskCaller.INIT_PRE);
+        //ticking input map state
+        TaskCaller.register(InputMap::keyStateUpdate, TaskCaller.TICK);
+
+        //dispose resources
+        TaskCaller.register(() -> {
+            GL.gl.dispose();
+            Platform.exit();
+        }, TaskCaller.DISPOSE);
 
         Platform.log("Window was created.");
         new Lwjgl3Application(new BuiltinListener(), config);
@@ -88,6 +115,11 @@ public class Context
     public static boolean isFullScreen()
     {
         return fullScreen;
+    }
+
+    public static BuiltinInput getInputRegistry()
+    {
+        return input;
     }
 
 }

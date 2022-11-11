@@ -1,7 +1,9 @@
-package cm.milkywaygl.render.nnat;
+package cm.milkywaygl.input;
 
 import cm.milkywaygl.render.GL;
 
+//don't use on exact input.
+//only use in some widgets.
 public class InputMap
 {
 
@@ -14,21 +16,12 @@ public class InputMap
     public static int[] mouseTimer = new int[3];
 
     public static double mx, my;
-
-    public static boolean keyOn(int code)
-    {
-        return keyState[code];
-    }
-
-    public static boolean mouseOn(int code)
-    {
-        return mouseState[code];
-    }
+    public static String inputString;
 
     public static void keyStateUpdate()
     {
         for(int i = 0; i < keyTimer.length; i++) {
-            if(keyOn(i)) {
+            if(keyState[i]) {
                 keyTimer[i]++;
             }
             else {
@@ -36,7 +29,7 @@ public class InputMap
             }
         }
         for(int i = 0; i < mouseTimer.length; i++) {
-            if(mouseOn(i)) {
+            if(mouseState[i]) {
                 mouseTimer[i]++;
             }
             else {
@@ -45,24 +38,28 @@ public class InputMap
         }
     }
 
-    public static int keyDownTime(int code)
+    public static boolean isOn(Key code)
     {
-        return keyTimer[code];
+        if(code == null) {
+            return false;
+        }
+        return code.isMouse() ? mouseState[code.code()] : keyState[code.code()];
     }
 
-    public static boolean keyClick(int code)
+    public static int downTime(Key code)
     {
-        return keyDownTime(code) == 0 && keyOn(code);
+        if(code == null) {
+            return 0;
+        }
+        return code.isMouse() ? mouseTimer[code.code()] : keyTimer[code.code()];
     }
 
-    public static int mouseDownTime(int code)
+    public static boolean isClick(Key code)
     {
-        return mouseTimer[code];
-    }
-
-    public static boolean mouseClick(int code)
-    {
-        return mouseDownTime(code) == 0 && mouseOn(code);
+        if(code == null) {
+            return false;
+        }
+        return downTime(code) == 0 && isOn(code);
     }
 
     public static double x()

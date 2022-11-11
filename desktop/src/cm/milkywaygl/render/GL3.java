@@ -1,7 +1,8 @@
 package cm.milkywaygl.render;
 
-import cm.milkywaygl.inter.GLBatch;
-import cm.milkywaygl.render.inat.Context;
+import cm.milkywaygl.interfac.GLBatch;
+import cm.milkywaygl.maths.Maths;
+import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.util.IntBuffer;
 import cm.milkywaygl.util.IntHolder;
@@ -15,6 +16,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import static com.badlogic.gdx.math.Matrix4.*;
+
 public class GL3 extends GLBatch
 {
 
@@ -27,8 +30,9 @@ public class GL3 extends GLBatch
     Environment env;
     IntHolder<Model> models = new IntHolder<>();
     IntHolder<ModelInstance> instances = new IntHolder<>();
-    IntHolder<Attribute> attrs = new IntHolder<>();
     Map<Model, Material> mats = new Map<>();
+    Map<ModelInstance, Material> matsIns = new Map<>();
+    double fogFrom;
 
     public GL3(GL g)
     {
@@ -75,8 +79,20 @@ public class GL3 extends GLBatch
         float bbRad = bbDim.len() / 2f;
 
         if(camera.frustum.sphereInFrustum(bbCenter, bbRad)) {
+            float[] xyz = ins.transform.val;
+            float dist = camPos.dst(xyz[M03], xyz[M13], xyz[M23]);
+            BlendingAttribute attr = matsIns.get(ins).get(BlendingAttribute.class, BlendingAttribute.Type);
+            attr.opacity = (float) distancedFog(dist);
             batch.render(ins, env);
         }
+    }
+
+    private double distancedFog(double dist)
+    {
+        if(dist >= fogFrom) {
+            return Maths.max(0, 1 - (dist - fogFrom) * 0.001);
+        }
+        return 1;
     }
 
     public IntBuffer genModel(double w, double h, double d)
@@ -92,36 +108,38 @@ public class GL3 extends GLBatch
         return models.gen(md);
     }
 
-    private IntBuffer genAndBind(IntBuffer model, Attribute attr)
+    private void genAndBind(IntBuffer model, Attribute attr)
     {
         Material mat = mats.get(models.get(model));
         mat.set(attr);
-        return attrs.gen(attr);
     }
 
-    public IntBuffer modelBindTex(IntBuffer model, IntBuffer tex)
+    public void modelBindTex(IntBuffer model, IntBuffer tex)
     {
-        return genAndBind(model, TextureAttribute.createDiffuse(GL.gl2._natTex(tex)));
+        genAndBind(model, TextureAttribute.createDiffuse(GL.gl2._natTex(tex)));
     }
 
-    public IntBuffer modelBindColor(IntBuffer model, Color4 c4f)
+    public void modelBindColor(IntBuffer model, Color4 c4f)
     {
-        return genAndBind(model, ColorAttribute.createDiffuse(c4f._nativeColor));
+        genAndBind(model, ColorAttribute.createDiffuse(c4f._nativeColor));
     }
 
     public IntBuffer createObj(IntBuffer model)
     {
-        return instances.gen(new ModelInstance(models.get(model)));
+        ModelInstance ins = new ModelInstance(models.get(model));
+        matsIns.put(ins, ins.getMaterial(mats.get(models.get(model)).id));
+        return instances.gen(ins);
     }
 
     Vector3 camPos = new Vector3();
     Vector3 camLook = new Vector3();
 
-    public void cameraSight(double near, double far)
+    public void cameraSight(double near, double far, double fogDist)
     {
         camera.far = (float) far;
         camera.near = (float) near;
         camera.update();
+        fogFrom = fogDist;
     }
 
     public void cameraLookPos(double x, double y, double z)

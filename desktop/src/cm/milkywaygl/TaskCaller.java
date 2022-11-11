@@ -1,9 +1,7 @@
-package cm.milkywaygl.render.nnat;
+package cm.milkywaygl;
 
-import cm.milkywaygl.inter.GLTickable;
-import cm.milkywaygl.Platform;
+import cm.milkywaygl.interfac.GLTickable;
 import cm.milkywaygl.util.container.List;
-import com.badlogic.gdx.Gdx;
 
 public class TaskCaller
 {
@@ -12,11 +10,13 @@ public class TaskCaller
     public static final int TICK = 1;
     public static final int RENDER = 2;
     public static final int DISPOSE = 3;
+    public static final int INIT_PRE = -1;
     private static final double nanoSec = 1000000000.0;
     public static int time;
     public static int nowFpsUpdate;
     public static int nowFpsRender;
     static List<GLTickable> onInit = new List<>();
+    static List<GLTickable> onInitPre = new List<>();
     static List<GLTickable> onTick = new List<>();
     static List<GLTickable> onRender = new List<>();
     static List<GLTickable> onDispose = new List<>();
@@ -29,6 +29,7 @@ public class TaskCaller
     private static int renderFrame;
     private static long timeTask;
     private static boolean firstTick = true;
+    private static boolean preInitEnd = false;
 
     public static void register(GLTickable run, int type)
     {
@@ -44,6 +45,9 @@ public class TaskCaller
                 break;
             case DISPOSE:
                 onDispose.add(run);
+                break;
+            case INIT_PRE:
+                onInitPre.add(run);
                 break;
         }
 
@@ -67,7 +71,14 @@ public class TaskCaller
 
     public static void init()
     {
+        Platform.log("Pre-init started.");
+        doRunIn(onInitPre);
+        preInitEnd = true;
+        Platform.log("Pre-init ended.");
+
+        Platform.log("Init started.");
         doRunIn(onInit);
+        Platform.log("Init ended.");
     }
 
     public static void dispose()
@@ -78,7 +89,7 @@ public class TaskCaller
     public static void tick()
     {
         if(firstTick) {
-            timeTask = Platform.getTickNs();
+            timeTask = Platform.getTickMill();
             lastTick = Platform.getTickNano();
         }
 
@@ -102,9 +113,9 @@ public class TaskCaller
         firstTick = false;
         loopTicks = 0;
 
-        if(Platform.getTickNs() - timeTask > 1000) {//fps count
+        if(Platform.getTickMill() - timeTask > 1000) {//fps count
             //nowFpsUpdate = updateFrame;
-            nowFpsUpdate = Gdx.graphics.getFramesPerSecond();
+            nowFpsUpdate = updateFrame;
             nowFpsRender = renderFrame;
             updateFrame = 0;
             renderFrame = 0;
@@ -121,6 +132,11 @@ public class TaskCaller
     public static boolean isTickCalm()
     {
         return loopTicks == 1;
+    }
+
+    public static boolean isPreInitialized()
+    {
+        return preInitEnd;
     }
 
 }

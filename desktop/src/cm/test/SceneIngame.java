@@ -1,26 +1,24 @@
 package cm.test;
 
-import cm.milkywaygl.inter.GLRenderable;
+import cm.milkywaygl.interfac.GLRenderable;
 import cm.milkywaygl.maths.RandomMap;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.GL3Performed;
-import cm.milkywaygl.render.nnat.InputMap;
-import cm.milkywaygl.render.nnat.TaskCaller;
+import cm.milkywaygl.input.InputMap;
+import cm.milkywaygl.TaskCaller;
 import cm.milkywaygl.render.wrapper.Color4;
-import cm.milkywaygl.render.wrapper.Keys;
+import cm.milkywaygl.input.Key;
 import cm.milkywaygl.sound.ClipPlayer;
 import cm.milkywaygl.text.Data;
-import cm.milkywaygl.text.I18n;
 import cm.milkywaygl.text.JsonFile;
 import cm.milkywaygl.util.container.List;
 import cm.milkywaylib.linkdown.BufDialog;
-import cm.milkywaylib.stg.*;
+import cm.milkywaytype.stg.*;
 import cm.milkywaylib.util.AnimatedRenderer;
 import cm.milkywaylib.linklib.RenderBuffer;
 import cm.milkywaylib.linkdown.BufBound;
 
-public class SceneMine extends SceneSTG
+public class SceneIngame extends SceneSTG
 {
 
     List<RenderBuffer> b2d = new List<>();
@@ -28,7 +26,6 @@ public class SceneMine extends SceneSTG
     Box4 scr = Box4.offset(170, 20, 460, 560);
     BufBound point = new BufBound();
     BufPlayer player;
-    GL3Performed gl3;
     RandomMap map = new RandomMap(3, 4);
     Bullets shoot = new Bullets(this);
     Act1 act1 = new Act1();
@@ -56,8 +53,6 @@ public class SceneMine extends SceneSTG
         player.box4().setSize(42, 54);
         player.box4().loc(380, 420);
         player.vec2().vec(0, -90);
-        gl3 = new GL3Performed(GL.gl);
-        gl3.init();
         Action.scene = this;
         Action.bullets = shoot;
         Action.player = player;
@@ -66,12 +61,20 @@ public class SceneMine extends SceneSTG
         dialog.box4().loc(400, 500);
         dialog.box4().setSize(500, 100);
         dialog.from(JsonFile.load("texts/dialog01.json"));
+        JsonFile keys = JsonFile.load("keys.json");
+        player.keyBind(
+                Key.key(keys.entry("right").toString()),
+                Key.key(keys.entry("left").toString()),
+                Key.key(keys.entry("up").toString()),
+                Key.key(keys.entry("down").toString()),
+                Key.key(keys.entry("mode").toString())
+        );
     }
 
     public void tickThen()
     {
         dialog.tick();
-        gl3.tick();
+        Main.performed.tick();
         for(int i = 0; i < 1; i++) {
             if(time % 3 != 0) {
                 break;
@@ -117,7 +120,7 @@ public class SceneMine extends SceneSTG
         }
         player.tick();
 
-        if(InputMap.keyOn(Keys.CTRL)) {
+        if(InputMap.isOn(Key.key("ctrl"))) {
             TaskCaller.setDefaultFps(1000, 60);
         }
         else {
@@ -128,12 +131,12 @@ public class SceneMine extends SceneSTG
     public void render()
     {
         //GL.gl3.cameraLookPosTranslate(-0.1, 0, 0);
-        if(TaskCaller.time >= 600) {
-            gl3.sped = 5;
+        if(time() >= 600) {
+            Main.performed.sped = 5;
         }
         GL.gl.clear();
 
-        GL.gl2.dim(Assets.background2, 170 - 40, 20, 460 + 80, 560);
+        GL.gl2.dim(Assets.stg6bg, 170 - 40, 20, 460 + 80, 560);
         for(int i = b2d.last(); i >= 0; i--) {
             RenderBuffer r = b2d.get(i);
             if(r != null) {
@@ -141,7 +144,7 @@ public class SceneMine extends SceneSTG
             }
         }
 
-        gl3.render();
+        Main.performed.render();
 
         player.render();
         List<BufBullet> bullet = bullets.get("default");

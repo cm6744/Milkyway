@@ -1,13 +1,12 @@
 package cm.milkywaygl.render;
 
-import cm.milkywaygl.inter.GLBatch;
+import cm.milkywaygl.interfac.GLBatch;
 import cm.milkywaygl.maths.check.Box4;
-import cm.milkywaygl.render.inat.Context;
+import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.resource.Path;
 import cm.milkywaygl.util.IntBuffer;
 import cm.milkywaygl.util.IntHolder;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
