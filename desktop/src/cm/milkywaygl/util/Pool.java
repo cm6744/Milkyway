@@ -1,6 +1,7 @@
-package cm.milkywaygl.util.container;
+package cm.milkywaygl.util;
 
 import cm.milkywaygl.interfac.GLReturnVal;
+import cm.milkywaygl.util.container.Queue;
 
 public class Pool<E>
 {
@@ -29,6 +30,11 @@ public class Pool<E>
     public void reuse(E obj)
     {
         frees.offer(obj);
+    }
+
+    public int freeSize()
+    {
+        return frees.size();
     }
 
 }

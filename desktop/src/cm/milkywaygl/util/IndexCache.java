@@ -2,7 +2,7 @@ package cm.milkywaygl.util;
 
 import cm.milkywaygl.util.container.List;
 
-public class IntHolder<E>
+public class IndexCache<E>
 {
 
     public static final int NULL = -1;
@@ -12,7 +12,7 @@ public class IntHolder<E>
     public IntBuffer gen(E e)
     {
         lst.add(e);
-        return IntBuffer.newBuf(lst.last());
+        return IntBuffer.create(lst.last());
     }
 
     public E get(IntBuffer i)

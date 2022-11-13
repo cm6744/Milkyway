@@ -5,7 +5,7 @@ public abstract class GLTimeline implements GLTickable
 
     protected int time;
 
-    public final void tick()
+    public void tick()
     {
         tickThen();
         promote();

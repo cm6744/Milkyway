@@ -25,7 +25,7 @@ public class Resource
             return new StreamManager<>(aul, st1);
         }
         catch(IOException | UnsupportedAudioFileException e) {
-            Platform.throwExc(e);
+            Platform.error("Path not found: " + path);
         }
         return new StreamManager<>(null);
     }
@@ -39,6 +39,10 @@ public class Resource
 
         try {
             is = Path.readerJar(path);
+            if(is == null) {
+                Platform.error("Path not found: " + path);
+                return new List<>();
+            }
             InputStreamReader isr = new InputStreamReader(is, textCharset);
             BufferedReader br = new BufferedReader(isr);
 
@@ -53,7 +57,7 @@ public class Resource
             return texts;
         }
         catch(IOException e) {
-            Platform.throwExc(e);
+            Platform.error("Path not found: " + path);
         }
 
         return new List<>();
@@ -63,6 +67,10 @@ public class Resource
     {
         try {
             FileWriter fr = Path.writerJar(path);
+            if(fr == null) {
+                Platform.error("Path not found: " + path);
+                return;
+            }
             BufferedWriter bw = new BufferedWriter(fr);
 
             for(int i = 0; i < texts.size(); i++) {
@@ -74,7 +82,7 @@ public class Resource
             fr.close();
         }
         catch(IOException e) {
-            Platform.throwExc(e);
+            Platform.error("Path not found: " + path);
         }
     }
 

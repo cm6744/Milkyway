@@ -2,22 +2,26 @@ package cm.test;
 
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.TaskCaller;
-import cm.milkywaylib.linkdown.BufProgress;
-import cm.milkywaylib.linklib.Scene;
-import cm.milkywaylib.linklib.SceneManager;
+import cm.milkywaygl.render.wrapper.Area;
+import cm.milkywaylib.buffers.ProgressLine;
+import cm.milkywaylib.base.Scene;
+import cm.milkywaylib.base.SceneManager;
 
 public class SceneLoad extends Scene
 {
 
-    BufProgress progress = new BufProgress();
+    ProgressLine progress = new ProgressLine();
 
     public void init()
     {
         Main.performed = new GL3Performed(GL.gl);
         Main.performed.init();
         progress.box4().loc(400, 550);
-        progress.box4().setSize(800, 5);
-        progress.pushTexture(Assets.progress);
+        progress.box4().setSize(800, 1.5);
+        Area em = Area.dim01(Assets.progress, 0, 0.5, 1, 0.5);
+        progress.setTexture(em, ProgressLine.EMPTY);
+        Area f = Area.dim01(Assets.progress, 0, 0, 1, 0.5);
+        progress.setTexture(f, ProgressLine.FULL);
     }
 
     public void tickThen()

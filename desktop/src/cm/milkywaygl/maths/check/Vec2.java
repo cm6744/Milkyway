@@ -42,6 +42,13 @@ public class Vec2
         return this;
     }
 
+    public Vec2 mulVec(double sp, double dr)
+    {
+        mulSpeed(sp);
+        mulDegree(dr);
+        return this;
+    }
+
     public Vec2 mvSpeed(double m)
     {
         speed += m;
@@ -54,6 +61,12 @@ public class Vec2
         return this;
     }
 
+    public Vec2 mulSpeed(double s)
+    {
+        speed *= s;
+        return this;
+    }
+
     public Vec2 mvDegree(double m)
     {
         degree += m;
@@ -63,6 +76,12 @@ public class Vec2
     public Vec2 setDegree(double s)
     {
         degree = s;
+        return this;
+    }
+
+    public Vec2 mulDegree(double s)
+    {
+        degree *= s;
         return this;
     }
 

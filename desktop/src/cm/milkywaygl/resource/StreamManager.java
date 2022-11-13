@@ -32,7 +32,7 @@ public class StreamManager<E>
             }
         }
         catch(IOException e) {
-            Platform.throwExc(e);
+            Platform.error("IO closing failed!");
         }
     }
 

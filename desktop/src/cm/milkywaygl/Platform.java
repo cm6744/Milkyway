@@ -1,5 +1,8 @@
 package cm.milkywaygl;
 
+/**
+ * @author cm
+ */
 public class Platform
 {
 
@@ -8,11 +11,6 @@ public class Platform
     public static void log(String mes)
     {
         System.out.println("[INFO] " + mes);
-    }
-
-    public static void throwExc(Exception e)
-    {
-        error(e.getMessage());
     }
 
     public static void error(String mes)
@@ -28,11 +26,6 @@ public class Platform
     public static long getTickMill()
     {
         return System.currentTimeMillis();
-    }
-
-    public static String getPlatformLocal()
-    {
-        return System.getProperty("os.name");
     }
 
     public static void exit()

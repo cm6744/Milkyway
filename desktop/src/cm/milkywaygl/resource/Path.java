@@ -44,7 +44,7 @@ public class Path
             return new FileInputStream(jarFile(path));
         }
         catch(FileNotFoundException i) {
-            Platform.throwExc(i);
+            Platform.error("Path not found: " + path);
         }
         return null;
     }
@@ -55,7 +55,7 @@ public class Path
             return new FileWriter(jarFile(path));
         }
         catch(IOException i) {
-            Platform.throwExc(i);
+            Platform.error("Path not found: " + path);
         }
         return null;
     }

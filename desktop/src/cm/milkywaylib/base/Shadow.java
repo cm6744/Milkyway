@@ -1,4 +1,4 @@
-package cm.milkywaylib.linklib;
+package cm.milkywaylib.base;
 
 import cm.milkywaygl.maths.LimitValue;
 import cm.milkywaygl.render.GL;
@@ -68,11 +68,14 @@ public class Shadow
 
     public void renderTurning()
     {
-        GL.gl.cacheState();
+        GL.gl.save();
+
         GL.gl.curState().opacity(turnProgress);
         GL.gl.curState().color(Color4.BLACK);
         GL.gl4.dim(0, 0, Context.width(), Context.height());
-        GL.gl.readState();
+
+        GL.gl.read();
+
         GL.gl.freeAll();
     }
 

@@ -3,9 +3,10 @@ package cm.milkywaygl.render;
 import cm.milkywaygl.interfac.GLBatch;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.render.nativegl.Context;
+import cm.milkywaygl.render.wrapper.Area;
 import cm.milkywaygl.resource.Path;
 import cm.milkywaygl.util.IntBuffer;
-import cm.milkywaygl.util.IntHolder;
+import cm.milkywaygl.util.IndexCache;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +16,7 @@ public class GL2 extends GLBatch
 {
 
     GL gl;
-    IntHolder<Texture> images = new IntHolder<>();
+    IndexCache<Texture> images = new IndexCache<>();
     SpriteBatch drawer;
     OrthographicCamera camera;
 
@@ -67,7 +68,7 @@ public class GL2 extends GLBatch
 
     public Texture _natTex(IntBuffer id)
     {
-        return images.get(id.value());
+        return images.get(id);
     }
 
     public double texw(IntBuffer id)
@@ -82,61 +83,61 @@ public class GL2 extends GLBatch
 
     /////////////////****///////////////////
 
-    public void vertex(Texture txt, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
+    public void vertex(IntBuffer buf, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
     {
         GL.gl.ensure(this);
         float r = drawer.getColor().r;
         float g = drawer.getColor().g;
         float b = drawer.getColor().b;
         float a = drawer.getColor().a;
-        drawer.setColor(r, g, b, a * (float) gl.mutable.alpha);
+        drawer.setColor(r, g, b, a * (float) gl.current.alpha);
         double ny = gl.calcY(y2);
         double nx = gl.calcX(x);
         double w = gl.calcP(x2 - x);
         double h = gl.calcP(y2 - y);
-        drawer.draw(txt, (float) (nx + (gl.mutable.mirror ? w : 0)), (float) (ny), (float) (w / 2), (float) (h / 2), (float) (gl.mutable.mirror ? -w : w), (float) (h), (float) 1, (float) 1,
+        drawer.draw(_natTex(buf),
+                    (float) (nx + (gl.current.mirror ? w : 0)),
+                    (float) (ny),
+                    (float) (w / 2), (float) (h / 2),
+                    (float) (gl.current.mirror ? -w : w),
+                    (float) (h), (float) 1, (float) 1,
                     //LIB GDX IMPL: COUNTER CLOCK WISE.
                     //IN PURE JAVA IT SHOULD BE POSITIVE.
-                    (float) (-gl.mutable.rotation), (int) u, (int) v, (int) (u2 - u), (int) (v2 - v), false, false
+                    (float) (-gl.current.rotation),
+                    (int) u, (int) v,
+                    (int) (u2 - u), (int) (v2 - v),
+                    false, false
         );
         drawer.setColor(r, g, b, a);
     }
 
-    public void vertex(IntBuffer reg, double x, double y, double x2, double y2, double u, double v, double u2, double v2)
+    public void dim(IntBuffer buf, double x, double y, double w, double h, double u, double v, double uw, double vh)
     {
-        if(reg.value() == IntHolder.NULL) {
-            return;
-        }
-        vertex(_natTex(reg), x, y, x2, y2, u, v, u2, v2);
+        vertex(buf, x, y, x + w, y + h, u, v, u + uw, v + vh);
     }
 
-    //Not Native Methods
-
-    public void dim(IntBuffer id, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    public void dim(IntBuffer buf, double x, double y, double w, double h)
     {
-        vertex(id, x, y, x + w, y + h, u, v, u + uw, v + vh);
+        dim(buf, x, y, w, h, 0, 0, texw(buf), texh(buf));
     }
 
-    public void dim01(IntBuffer id, double x, double y, double w, double h, double u, double v, double uw, double vh)
+    //Area renderer
+
+    public void vertex(Area area, double x, double y, double x2, double y2)
     {
-        double wi = texw(id);
-        double hi = texh(id);
-        dim(id, x, y, w, h, u * wi, v * hi, wi * uw, hi * vh);
+        //invoke area.renderVertex.
+        //This is designed for oop
+        area.renderVertex(x, y, x2, y2);
     }
 
-    public void dim(IntBuffer id, double x, double y, double w, double h)
+    public void dim(Area area, double x, double y, double w, double h)
     {
-        dim(id, x, y, w, h, 0, 0, texw(id), texh(id));
+        vertex(area, x, y, x + w, y + h);
     }
 
-    public void dim(IntBuffer id, Box4 b)
+    public void dim(Area area, Box4 box4)
     {
-        dim(id, b.xc(), b.yc(), b.width(), b.height());
-    }
-
-    public void dim(IntBuffer id, Box4 b, Box4 uv)
-    {
-        dim(id, b.xc(), b.yc(), b.width(), b.height(), uv.xc(), uv.yc(), uv.width(), uv.height());
+        dim(area, box4.xc(), box4.yc(), box4.width(), box4.height());
     }
 
 }

@@ -1,4 +1,4 @@
-package cm.milkywaylib.linklib;
+package cm.milkywaylib.base;
 
 public class SceneManager
 {

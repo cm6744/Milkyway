@@ -9,6 +9,9 @@ import cm.milkywaygl.resource.StreamManager;
 import javax.sound.sampled.*;
 import java.io.IOException;
 
+/**
+ * @author cm
+ */
 public class SoundDevice
 {
 
@@ -138,7 +141,7 @@ public class SoundDevice
                     }
                 }
                 catch(IOException | LineUnavailableException e) {
-                    Platform.throwExc(e);
+                    Platform.error("Play sound exception!");
                 }
                 finally {
                     if(dataLine != null) {

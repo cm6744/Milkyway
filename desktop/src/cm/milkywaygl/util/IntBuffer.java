@@ -3,28 +3,27 @@ package cm.milkywaygl.util;
 public class IntBuffer
 {
 
-    int value;
-
-    public static IntBuffer newBuf(int i)
+    public static IntBuffer create(int v)
     {
-        IntBuffer buf = new IntBuffer();
-        buf.setValue(i);
-        return buf;
+        return create().setValue(v);
     }
 
-    public static IntBuffer newBuf()
+    public static IntBuffer create()
     {
         return new IntBuffer();
     }
 
-    public void setValue(int val)
+    int val = IndexCache.NULL;
+
+    public IntBuffer setValue(int v)
     {
-        value = val;
+        val = v;
+        return this;
     }
 
     public int value()
     {
-        return value;
+        return val;
     }
 
 }

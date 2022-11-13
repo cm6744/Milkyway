@@ -4,8 +4,8 @@ public class Ray
 {
 
     Vec2 direction = Vec2.normal();
-    Box4 oriXy = Box4.normal();
-    Box4 endXy = Box4.normal();
+    Box4 oriXy = Box4.normalInset();
+    Box4 endXy = Box4.normalInset();
 
     public static Ray of(double sx, double sy, Vec2 vec2)
     {

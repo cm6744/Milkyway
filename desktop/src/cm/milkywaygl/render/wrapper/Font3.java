@@ -8,9 +8,12 @@ import cm.milkywaygl.util.container.VarList;
 public class Font3
 {
 
+    static final int ALL = 10;
+
     VarList numbers = new VarList();
 
     IntBuffer fontsAll;
+    Area[] eachFont = new Area[ALL];
 
     boolean zeroFilling;
     int sizeOfNumber;
@@ -20,15 +23,17 @@ public class Font3
         fontsAll = fonts;
         zeroFilling = fillWithZero;
         sizeOfNumber = size;
+
+        for(int i = 0; i < ALL; i++) {
+            Area area = Area.dim01(fonts, 1.0 / ALL * i, 0, 1.0 / ALL, 1);
+            eachFont[i] = area;
+        }
     }
 
     public void render(double x, double y, int eachWidth, int height)
     {
-        double texEach = GL.gl2.texw(fontsAll) / 10;
-        double texHeight = GL.gl2.texw(fontsAll);
-
         for(int i = 0; i < numbers.size(); i++) {
-            GL.gl2.dim(fontsAll, x + (i * eachWidth), y, eachWidth, height, texEach * numbers.get(i), 0, texEach, texHeight);
+            GL.gl2.dim(eachFont[numbers.get(i)], x, y, eachWidth, height);
         }
     }
 

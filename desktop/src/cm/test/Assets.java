@@ -5,32 +5,33 @@ import cm.milkywaygl.render.wrapper.Font2;
 import cm.milkywaygl.render.wrapper.FontType;
 import cm.milkywaygl.resource.AssetsLoading;
 import cm.milkywaygl.util.IntBuffer;
-import cm.milkywaytype.stg.BufBullet;
+import cm.milkywaytype.stg.Bullet;
 
 public class Assets
 {
     public static AssetsLoading loading = new AssetsLoading();
 
-    public static IntBuffer white = IntBuffer.newBuf();
-    public static IntBuffer loadingFont = IntBuffer.newBuf();
-    public static IntBuffer loadingBG = IntBuffer.newBuf();
+    public static IntBuffer white = IntBuffer.create();
+    public static IntBuffer loadingFont = IntBuffer.create();
+    public static IntBuffer loadingBG = IntBuffer.create();
 
-    public static IntBuffer stg6bg = IntBuffer.newBuf();
-    public static IntBuffer overlay1 = IntBuffer.newBuf();
-    public static IntBuffer bullet1 = IntBuffer.newBuf();
-    public static IntBuffer bulletFG = IntBuffer.newBuf();
-    public static IntBuffer cursor = IntBuffer.newBuf();
+    public static IntBuffer stg6bg = IntBuffer.create();
+    public static IntBuffer overlay1 = IntBuffer.create();
+    public static IntBuffer bullet1 = IntBuffer.create();
+    public static IntBuffer bulletFG = IntBuffer.create();
+    public static IntBuffer cursor = IntBuffer.create();
     public static FontType chType;
     public static Font2 ch;
     public static FontType enType;
     public static Font2 en;
-    public static IntBuffer player1 = IntBuffer.newBuf();
-    public static IntBuffer point = IntBuffer.newBuf();
-    public static IntBuffer character = IntBuffer.newBuf();
-    public static IntBuffer win = IntBuffer.newBuf();
-    public static IntBuffer moon = IntBuffer.newBuf();
-    public static IntBuffer button = IntBuffer.newBuf();
-    public static IntBuffer progress = IntBuffer.newBuf();
+    public static IntBuffer player1 = IntBuffer.create();
+    public static IntBuffer point = IntBuffer.create();
+    public static IntBuffer character = IntBuffer.create();
+    public static IntBuffer win = IntBuffer.create();
+    public static IntBuffer moon = IntBuffer.create();
+    public static IntBuffer button = IntBuffer.create();
+    public static IntBuffer progress = IntBuffer.create();
+    public static IntBuffer enemy = IntBuffer.create();
 
     public static void loadAll()
     {
@@ -45,8 +46,9 @@ public class Assets
         loading.loadTex(Assets.cursor, ("textures/misc/cursor.png"));
         loading.loadTex(Assets.bullet1, ("textures/1.png"));
         loading.loadTex(Assets.bulletFG, ("textures/1a.png"));
-        BufBullet.FOG = bulletFG;
-        BufBullet.TEXTURE = bullet1;
+        loading.loadTex(enemy, "textures/enemy.png");
+        Bullet.TEXTURE = bullet1;
+        Bullet.FOG = bulletFG;
         loading.loadTex(Assets.overlay1, ("textures/3.png"));
         loading.loadTex(Assets.player1, ("textures/mrsp.png"));
         loading.loadTex(Assets.point, ("textures/boundpoint.png"));

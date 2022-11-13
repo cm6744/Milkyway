@@ -21,7 +21,7 @@ public class GL2F
         GL.gl.ensure(gl2);
         double xin = x, yin = y;
         //Allow smoothing to font native
-        Font2 f2 = gl.mutable.fontNow;
+        Font2 f2 = gl.current.fontNow;
         BitmapFont ft = f2._nativeFont;
         BitmapFont.BitmapFontData bb = ft.getData();
         if(center) {
@@ -42,7 +42,7 @@ public class GL2F
     public void lines(String text, double x, double y, double max)
     {
         GL.gl.ensure(gl2);
-        Font2 f2 = gl.mutable.fontNow;
+        Font2 f2 = gl.current.fontNow;
         BitmapFont ft = f2._nativeFont;
         ft.draw(gl2.drawer, text, (float) gl.calcX(x), (float) gl.calcY(y),
                 0, text.length(), (float) max, Align.left, true

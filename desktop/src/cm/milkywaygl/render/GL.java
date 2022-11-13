@@ -6,6 +6,7 @@ import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.render.wrapper.Font2;
 import cm.milkywaygl.render.wrapper.FontType;
+import cm.milkywaygl.util.Pool;
 import com.badlogic.gdx.Gdx;
 
 import static com.badlogic.gdx.graphics.GL20.*;
@@ -25,8 +26,8 @@ public class GL
 
     GLBatch blocking;
 
-    State mutable = new State();
-    State store = new State();
+    State current = new State();
+    State cache = new State();
 
     public static void create()
     {
@@ -44,25 +45,30 @@ public class GL
 
     public void init()
     {
-        if(!Context.isFullScreen()) {
-            gl.zoom = Context.winHeight() / Context.height();
-        }
-        else {
-            gl.zoom = 1;
-        }
-
-        gl.zoomedH = Context.height() * gl.zoom;
-        gl.zoomedW = Context.width() * gl.zoom;
-        gl.cornerX = (Context.winWidth() - (zoomedW)) / 2;
-        gl.cornerY = 0;
+        updateFrameData();
 
         gl2.init();
         gl3.init();
         gl4.init();
 
-        gl.initialized = true;
+        initialized = true;
 
         Platform.log("GL calculate current zoom scale: " + zoom);
+    }
+
+    public void updateFrameData()
+    {
+        if(!Context.isFullScreen()) {
+            zoom = Context.winHeight() / Context.height();
+        }
+        else {
+            zoom = 1;
+        }
+
+        zoomedH = Context.height() * zoom;
+        zoomedW = Context.width() * zoom;
+        cornerX = (Context.winWidth() - (zoomedW)) / 2;
+        cornerY = 0;
     }
 
     public void dispose()
@@ -162,29 +168,19 @@ public class GL
 
     //STATEMENT
 
-    public void cacheState()
+    public void save()
     {
-        store.copy(mutable);
+        cache.copy(current);
     }
 
-    public void readState()
+    public void read()
     {
-        mutable.copy(store);
+        current.copy(cache);
     }
 
     public State curState()
     {
-        return mutable;
-    }
-
-    public State copyCurState()
-    {
-        return new State().copy(mutable);
-    }
-
-    public void setCurState(State s)
-    {
-        mutable = s;
+        return current;
     }
 
     public static class State
@@ -193,7 +189,7 @@ public class GL
         public double rotation;
         public double lx, ly;
         public double alpha = 1.0;
-        public boolean mirror;
+        public boolean mirror = false;
         public Color4 colorNow = Color4.WHITE;
         public Font2 fontNow = null;
 
@@ -204,20 +200,9 @@ public class GL
             ly = y;
         }
 
-        public void clearRotation()
-        {
-            rotation = 0;
-            lx = ly = 0;
-        }
-
         public void opacity(double v)
         {
             alpha = v;
-        }
-
-        public void clearOpacity()
-        {
-            alpha = 1;
         }
 
         public void mirrored(boolean mir)

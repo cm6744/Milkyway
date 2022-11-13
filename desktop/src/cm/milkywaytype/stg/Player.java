@@ -4,19 +4,22 @@ import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.input.InputMap;
 import cm.milkywaygl.input.Key;
-import cm.milkywaylib.util.AnimatedRenderer;
-import cm.milkywaylib.linkdown.BufBound;
+import cm.milkywaygl.render.GL;
+import cm.milkywaygl.render.wrapper.AnimatedArea;
+import cm.milkywaygl.render.wrapper.Area;
+import cm.milkywaylib.buffers.Bounder;
 
-public class BufPlayer extends BufBound
+public class Player extends Bounder
 {
+
+    public static final String STAY = "stay";
+    public static final String MOVE = "move";
 
     double defaultSpeed;
     double shiftSpeed;
     //INITIAL, AFTER TAKING IN
-    BufBound boundPoint;
+    Bounder boundPoint;
     double sizeMax;
-    AnimatedRenderer stayTimeline;
-    AnimatedRenderer moveTimeline;
     Box4 moveDimension;
 
     boolean up;
@@ -34,10 +37,8 @@ public class BufPlayer extends BufBound
     Key kd = Key.key("down");
     Key ks = Key.key("shift");
 
-    public BufPlayer(double speed, double shiftSped, BufBound point, AnimatedRenderer stay, AnimatedRenderer move, Box4 moveDim)
+    public Player(double speed, double shiftSped, Bounder point, Box4 moveDim)
     {
-        stayTimeline = stay;
-        moveTimeline = move;
         defaultSpeed = speed;
         shiftSpeed = shiftSped;
         boundPoint = point;
@@ -117,25 +118,28 @@ public class BufPlayer extends BufBound
         }
         b.setSize(s, s);
 
-        stayTimeline.tick();
-        moveTimeline.tick();
-
         boundPoint.box4().loc(box4.x(), box4.y());
+        boundPoint.effect().mvRotation(1);
     }
 
     public void renderThen(double x, double y, double w, double h)
     {
         if(dieTime <= 0 && (noBoundTime <= 0 || (noBoundTime % 5 != 0))) {
+            Area moveTimeline = texture(MOVE);
+            Area stayTimeline = texture(STAY);
             if(left) {
-                moveTimeline.render(box4, false);
+                GL.gl2.dim(moveTimeline, box4);
             }
             else if(right) {
-                moveTimeline.render(box4, true);
+                GL.gl.curState().mirrored(true);
+                GL.gl2.dim(moveTimeline, box4);
             }
             else {
-                stayTimeline.render(box4, false);
+                GL.gl2.dim(stayTimeline, box4);
             }
+            GL.gl.read();
             boundPoint.render();
+            GL.gl.save();
         }
     }
 

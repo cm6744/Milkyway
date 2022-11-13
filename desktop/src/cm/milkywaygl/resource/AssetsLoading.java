@@ -34,7 +34,8 @@ public class AssetsLoading
 
     public void loadTexImmediately(IntBuffer buf, String path)
     {
-        buf.setValue(GL.gl2.loadTexture(path).value());
+        IntBuffer i = GL.gl2.loadTexture(path);
+        buf.setValue(i.value());
     }
 
     public void update()
@@ -46,7 +47,6 @@ public class AssetsLoading
             return;
         }
         r.tick();
-        Platform.log("Asset loaded. Remain: " + (total - run));
         run++;
         progress = run / total;
     }

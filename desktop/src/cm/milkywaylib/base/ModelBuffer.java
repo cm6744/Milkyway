@@ -1,4 +1,4 @@
-package cm.milkywaylib.linklib;
+package cm.milkywaylib.base;
 
 import cm.milkywaygl.interfac.GLRenderable;
 import cm.milkywaygl.maths.check.Effect;
@@ -28,10 +28,12 @@ public class ModelBuffer implements GLRenderable
 
     public void render()
     {
-        GL.gl.cacheState();
+        GL.gl.save();
+
         GL.gl.curState().opacity(effect.opacity());
         GL.gl3.render(bind, pos.x(), pos.y(), pos.z());
-        GL.gl.readState();
+
+        GL.gl.read();
     }
 
     public void pushBind(IntBuffer b)

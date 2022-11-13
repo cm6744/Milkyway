@@ -1,14 +1,12 @@
 package cm.test;
 
-import cm.milkywaygl.Platform;
-import cm.milkywaygl.render.GL;
 import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.render.nativegl.Preference;
 import cm.milkywaygl.input.SimpleInputCallback;
 import cm.milkywaygl.TaskCaller;
 import cm.milkywaygl.sound.SoundDevice;
 import cm.milkywaygl.text.JsonFile;
-import cm.milkywaylib.linklib.SceneManager;
+import cm.milkywaylib.base.SceneManager;
 
 public class Main
 {
@@ -19,16 +17,16 @@ public class Main
     public static void main(String[] args)
     {
         JsonFile jf = JsonFile.load("property.json");
-        jf.openReading();
         Preference pref = new Preference();
-        String lang = jf.entry("language").toString();
+        //String lang = jf.entry("language").toString();
         pref.width = jf.entry("width").toInt();
         pref.height = jf.entry("height").toInt();
-        pref.winWidth = jf.entry("win-width").toInt();
-        pref.winHeight = jf.entry("win-height").toInt();
+        pref.winWidth = jf.entry("win_width").toInt();
+        pref.winHeight = jf.entry("win_height").toInt();
         pref.cursor = jf.entry("cursor").toString();
         pref.icon = jf.entry("icon").toString();
         pref.title = jf.entry("title").toString();
+        pref.fullScreen = jf.entry("full_screen").toBool();
         defFps = jf.entry("fps").toInt();
 
         TaskCaller.register(() -> {

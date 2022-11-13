@@ -1,9 +1,12 @@
 package cm.milkywaygl.render.wrapper;
 
+import cm.milkywaygl.util.IndexCache;
 import com.badlogic.gdx.graphics.Color;
 
 public class Color4
 {
+
+    public static IndexCache<Color4> CACHES = new IndexCache<>();
 
     public static Color4 LIGHT = Color4.create(1, 1, 1, 0.5);
     public static Color4 SHADOW = Color4.create(0, 0, 0, 0.5);
@@ -14,6 +17,7 @@ public class Color4
 
     ///////////***** impl ****///////////
     public Color _nativeColor;
+    public int id;
     double red;
     double green;
     double blue;
@@ -33,6 +37,7 @@ public class Color4
         alpha = a;
 
         _nativeColor = new Color((float) r, (float) g, (float) b, (float) a);
+        id = CACHES.gen(this).value();
     }
 
     public static Color4 create(double r, double g, double b, double a)

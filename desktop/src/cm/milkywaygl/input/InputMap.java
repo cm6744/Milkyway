@@ -2,8 +2,6 @@ package cm.milkywaygl.input;
 
 import cm.milkywaygl.render.GL;
 
-//don't use on exact input.
-//only use in some widgets.
 public class InputMap
 {
 

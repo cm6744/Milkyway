@@ -13,14 +13,13 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 
 public class Context
 {
 
     static int width;
     static int height;
-    static int winWidth;
-    static int winHeight;
     static boolean fullScreen;
     static Preference pref;
     static BuiltinInput input;
@@ -33,12 +32,10 @@ public class Context
         fullScreen = pref.fullScreen;
         width = pref.width;
         height = pref.height;
-        winWidth = fullScreen ? width : pref.winWidth;
-        winHeight = fullScreen ? height : pref.winHeight;
 
         config = new Lwjgl3ApplicationConfiguration();
-        config.setWindowedMode(winWidth, winHeight);
-        config.setResizable(false);
+        config.setWindowedMode(pref.winWidth, pref.winHeight);
+        config.setResizable(true);
         config.setTitle(pref.title);
         if(fullScreen) {
             config.setDecorated(false);
@@ -47,6 +44,7 @@ public class Context
         config.setIdleFPS(pref.fps);
         config.setForegroundFPS(pref.fps);
         config.setWindowIcon(Path.jar(pref.icon));
+        config.setHdpiMode(HdpiMode.Logical);
 
         if(fullScreen) {
             Graphics.DisplayMode[] modes = Lwjgl3ApplicationConfiguration.getDisplayModes();
@@ -80,7 +78,10 @@ public class Context
 
         }, TaskCaller.INIT_PRE);
         //ticking input map state
-        TaskCaller.register(InputMap::keyStateUpdate, TaskCaller.TICK);
+        TaskCaller.register(() -> {
+            InputMap.keyStateUpdate();
+            GL.gl.updateFrameData();
+        }, TaskCaller.TICK);
 
         //dispose resources
         TaskCaller.register(() -> {
@@ -104,12 +105,12 @@ public class Context
 
     public static double winWidth()
     {
-        return winWidth;
+        return Gdx.graphics.getWidth();
     }
 
     public static double winHeight()
     {
-        return winHeight;
+        return Gdx.graphics.getHeight();
     }
 
     public static boolean isFullScreen()

@@ -1,53 +1,56 @@
 package cm.milkywaygl.util.container;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import cm.milkywaygl.interfac.GLIterable;
+import cm.milkywaygl.interfac.GLIterator;
 
-public class Map<K, E>
+import java.util.HashMap;
+
+public class Map<K, E> implements GLIterable<E>
 {
 
-    private final HashMap<K, E> hsb = new HashMap<>();//@Nt
+    private final List<E> allObj = new List<>();
+    private final HashMap<K, E> hash = new HashMap<>();//@Nt
 
     public int size()
     {
-        return hsb.size();
-    }
-
-    public List<E> values()
-    {
-        Collection<E> lstJ = hsb.values();
-        List<E> lst = new List<>();
-        for(E e : lstJ) {
-            lst.add(e);
-        }
-        return lst;
-    }
-
-    public List<K> keys()
-    {
-        Set<K> lstJ = hsb.keySet();
-        List<K> lst = new List<>();
-        for(K e : lstJ) {
-            lst.add(e);
-        }
-        return lst;
+        return hash.size();
     }
 
     public void put(K key, E obj)
     {
-        hsb.put(key, obj);
+        E old = hash.get(key);
+        if(old != null) {
+            allObj.remove(old);
+        }
+
+        allObj.add(obj);
+        hash.put(key, obj);
+    }
+
+    public boolean has(K key)
+    {
+        return hash.get(key) != null;
     }
 
     public E get(K key)
     {
-        return hsb.get(key);
+        return hash.get(key);
     }
 
     public E getOrElse(K key, E nullValue)
     {
         E o = get(key);
         return o == null ? nullValue : o;
+    }
+
+    public void iterate(GLIterator<E> itr, boolean opposite)
+    {
+        allObj.iterate(itr, opposite);
+    }
+
+    public List<E> toList()
+    {
+        return allObj;
     }
 
 }

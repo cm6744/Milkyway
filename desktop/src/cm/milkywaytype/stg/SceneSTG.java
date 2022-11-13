@@ -1,30 +1,26 @@
 package cm.milkywaytype.stg;
 
-import cm.milkywaygl.util.container.List;
-import cm.milkywaygl.util.container.Map;
-import cm.milkywaygl.util.container.Pool;
-import cm.milkywaylib.linklib.Scene;
+import cm.milkywaygl.util.Pool;
+import cm.milkywaylib.base.Scene;
+import cm.milkywaylib.buffers.Particle;
+import cm.milkywaylib.buffers.ParticlePow;
+import cm.milkywaylib.util.BufferGroup;
+import cm.milkywaylib.util.BufferQueue;
 
 public class SceneSTG extends Scene
 {
 
-    public Map<String, List<BufBullet>> bullets = new Map<>();
-    public Pool<BufBullet> bulletPool = new Pool<>(BufBullet::new);
+    public BufferQueue<Bullet> bullets = new BufferQueue<>();
+    public BufferQueue<Enemy> enemies = new BufferQueue<>();
+    public BufferGroup<Particle> particles = new BufferGroup<>();
+    public Pool<Bullet> bulletPool = new Pool<>(Bullet::new);
+    public Pool<ParticlePow> particlePool = new Pool<>(ParticlePow::new);
 
     public void init()
     {
         super.init();
         bulletPool.fill(5000);
-    }
-
-    public void addGroup(String name)
-    {
-        bullets.put(name, new List<>());
-    }
-
-    public void addBullet(String group, BufBullet bul)
-    {
-        bullets.get(group).add(bul);
+        particlePool.fill(5000);
     }
 
 }

@@ -1,12 +1,10 @@
 package cm.test;
 
-import cm.milkywaygl.Platform;
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.util.IntBuffer;
 import cm.milkywaygl.util.container.List;
-import cm.milkywaylib.linklib.ModelBuffer;
-import cm.test.Assets;
+import cm.milkywaylib.base.ModelBuffer;
 
 public class GL3Performed
 {
@@ -28,7 +26,7 @@ public class GL3Performed
     {
         GL.gl3.cameraPos(0, 0, 10);
         GL.gl3.cameraLookPos(-7, 0, 0);
-        GL.gl3.cameraSight(1, 5800, 3000);
+        GL.gl3.cameraSight(1, 2000, 1000);
         md = GL.gl3.genModel(700, 420, 5);
         GL.gl3.modelBindTex(md, Assets.win);
         roof = GL.gl3.genModel(700, 2, 420);
@@ -37,11 +35,6 @@ public class GL3Performed
         addPair(-700);
         addPair(-1400);
         addPair(-2100);
-        addPair(-2800);
-        addPair(-3500);
-        addPair(-4200);
-        addPair(-4900);
-        addPair(-5600);
     }
 
     private void addPair(float x)

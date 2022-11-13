@@ -1,4 +1,4 @@
-package cm.milkywaylib.linklib;
+package cm.milkywaylib.base;
 
 import cm.milkywaygl.interfac.GLRenderable;
 import cm.milkywaygl.interfac.GLTimeline;

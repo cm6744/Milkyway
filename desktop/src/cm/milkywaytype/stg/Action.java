@@ -7,7 +7,7 @@ public class Action<E> extends GLTimeline
 
     public static SceneSTG scene;
     public static Bullets bullets;
-    public static BufPlayer player;
+    public static Player player;
 
     public E buf;
 

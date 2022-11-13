@@ -1,6 +1,9 @@
 package cm.milkywaygl.util.container;
 
-public class List<E>
+import cm.milkywaygl.interfac.GLIterable;
+import cm.milkywaygl.interfac.GLIterator;
+
+public class List<E> implements GLIterable<E>
 {
 
     private static final int DEFAULT_CAPACITY = 10;
@@ -134,6 +137,24 @@ public class List<E>
     public boolean contains(E obj)
     {
         return indexOf(obj) >= 0;
+    }
+
+    //ITERATE
+
+    public void iterate(GLIterator<E> itr, boolean opposite)
+    {
+        if(opposite) {
+            for(int i = last(); i >= 0; i--) {
+                E o = get(i);
+                itr.iterate(o, i);
+            }
+        }
+        else {
+            for(int i = 0; i < size(); i++) {
+                E o = get(i);
+                itr.iterate(o, i);
+            }
+        }
     }
 
 }

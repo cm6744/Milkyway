@@ -1,4 +1,4 @@
-package cm.milkywaylib.linkdown;
+package cm.milkywaylib.buffers;
 
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.input.InputMap;
@@ -6,10 +6,12 @@ import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.input.Key;
 import cm.milkywaygl.text.JsonFile;
 import cm.milkywaygl.util.container.List;
-import cm.milkywaylib.linklib.RenderBuffer;
+import cm.milkywaylib.base.RenderBuffer;
 
-public class BufDialog extends RenderBuffer
+public class Dialog extends RenderBuffer
 {
+
+    public static final String V_TEXT = "text";
 
     List<String> text = new List<>();
     Color4 color;
@@ -41,8 +43,8 @@ public class BufDialog extends RenderBuffer
             GL.gl.curState().color(color);
             GL.gl4.dim(box4);
         }
-        else if(texture != null) {
-            GL.gl2.dim(texture, box4);
+        else if(texture() != null) {
+            GL.gl2.dim(texture(), box4);
         }
 
         if(text != null) {
@@ -64,12 +66,7 @@ public class BufDialog extends RenderBuffer
 
     public void from(JsonFile txt)
     {
-        String k;
-        int times = 0;
-        while((k = txt.entry("line." + times).toString()) != null) {
-            times++;
-            append(k);
-        }
+        txt.toMap().iterate((o, i) -> append(o.entry(V_TEXT).toString()), false);
     }
 
     public void setColor(Color4 c4)

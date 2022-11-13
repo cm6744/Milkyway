@@ -5,7 +5,7 @@ import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.render.nativegl.Context;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.util.IntBuffer;
-import cm.milkywaygl.util.IntHolder;
+import cm.milkywaygl.util.IndexCache;
 import cm.milkywaygl.util.container.Map;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -28,8 +28,8 @@ public class GL3 extends GLBatch
     ModelBatch batch;
     PerspectiveCamera camera;
     Environment env;
-    IntHolder<Model> models = new IntHolder<>();
-    IntHolder<ModelInstance> instances = new IntHolder<>();
+    IndexCache<Model> models = new IndexCache<>();
+    IndexCache<ModelInstance> instances = new IndexCache<>();
     Map<Model, Material> mats = new Map<>();
     Map<ModelInstance, Material> matsIns = new Map<>();
     double fogFrom;
@@ -44,9 +44,8 @@ public class GL3 extends GLBatch
         batch = new ModelBatch();
         env = new Environment();
         env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.1f, 0.1f, 1));
-        env.set(new ColorAttribute(ColorAttribute.Fog, 0.3f, 0.3f, 0.3f, 1));
+        env.add(new DirectionalLight().set(0.5f, 0.5f, 0.7f, -1f, -0f, -1f));
         camera = new PerspectiveCamera(100, (int) Context.width(), (int) Context.height());
-        env.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.8f));
     }
 
     public void dispose()

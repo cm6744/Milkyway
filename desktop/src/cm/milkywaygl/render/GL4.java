@@ -51,11 +51,11 @@ public class GL4 extends GLBatch
     public void vertex(double x, double y, double x2, double y2)
     {
         GL.gl.ensure(this);
-        float r = gl.mutable.colorNow._nativeColor.r;
-        float g = gl.mutable.colorNow._nativeColor.g;
-        float b = gl.mutable.colorNow._nativeColor.b;
-        float a = gl.mutable.colorNow._nativeColor.a;
-        renderer.setColor(r, g, b, a * (float) gl.mutable.alpha);
+        float r = gl.current.colorNow._nativeColor.r;
+        float g = gl.current.colorNow._nativeColor.g;
+        float b = gl.current.colorNow._nativeColor.b;
+        float a = gl.current.colorNow._nativeColor.a;
+        renderer.setColor(r, g, b, a * (float) gl.current.alpha);
         renderer.rect((float) gl.calcX(x), (float) gl.calcY(y2), (float) gl.calcP(x2 - x), (float) gl.calcP(y2 - y));
     }
 

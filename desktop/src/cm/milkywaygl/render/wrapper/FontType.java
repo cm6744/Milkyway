@@ -40,7 +40,6 @@ public class FontType
         param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         font = Path._libJar(path);
         desc = JsonFile.load(descPath);
-        desc.openReading();
         chars = desc.entry("characters").toString();
         generator = new FreeTypeFontGenerator(font);
         management.add(this);

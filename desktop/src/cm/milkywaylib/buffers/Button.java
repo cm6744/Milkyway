@@ -1,14 +1,18 @@
-package cm.milkywaylib.linkdown;
+package cm.milkywaylib.buffers;
 
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.input.InputMap;
 import cm.milkywaygl.input.Key;
-import cm.milkywaylib.linklib.RenderBuffer;
+import cm.milkywaylib.base.RenderBuffer;
 
 //Needs texture format:
 //---------
-public class BufButton extends RenderBuffer
+public class Button extends RenderBuffer
 {
+
+    public static final String DOWN = "down";
+    public static final String UP = "up";
+    public static final String HANG = "hang";
 
     int countDown;
     String text;
@@ -24,16 +28,13 @@ public class BufButton extends RenderBuffer
         countDown--;
 
         if(isInDownState()) {
-            //line 3
-            GL.gl2.dim01(texture, x, y, w, h, 0, 2 / 3.0, 1, 1 / 3.0);
+            GL.gl2.dim(texture(DOWN), box4);
         }
         else if(hangOn()) {
-            //line 2
-            GL.gl2.dim01(texture, x, y, w, h, 0, 1 / 3.0, 1, 1 / 3.0);
+            GL.gl2.dim(texture(HANG), box4);
         }
         else {
-            //line 1
-            GL.gl2.dim01(texture, x, y, w, h, 0, 0, 1, 1 / 3.0);
+            GL.gl2.dim(texture(UP), box4);
         }
 
         if(text != null) {

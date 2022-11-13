@@ -8,7 +8,6 @@ public class I18n
     public static void load(String path)
     {
         map = JsonFile.load(path);
-        map.openReading();
     }
 
     public static String translate(String key)

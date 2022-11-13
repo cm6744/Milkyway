@@ -1,22 +1,24 @@
 package cm.test;
 
-import cm.milkywaygl.interfac.GLRenderable;
+import cm.milkywaygl.maths.Maths;
 import cm.milkywaygl.maths.RandomMap;
 import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaygl.render.GL;
 import cm.milkywaygl.input.InputMap;
 import cm.milkywaygl.TaskCaller;
+import cm.milkywaygl.render.wrapper.Area;
 import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.input.Key;
 import cm.milkywaygl.sound.ClipPlayer;
 import cm.milkywaygl.text.Data;
 import cm.milkywaygl.text.JsonFile;
 import cm.milkywaygl.util.container.List;
-import cm.milkywaylib.linkdown.BufDialog;
+import cm.milkywaylib.buffers.Dialog;
+import cm.milkywaylib.buffers.ParticleAuto;
 import cm.milkywaytype.stg.*;
-import cm.milkywaylib.util.AnimatedRenderer;
-import cm.milkywaylib.linklib.RenderBuffer;
-import cm.milkywaylib.linkdown.BufBound;
+import cm.milkywaygl.render.wrapper.AnimatedArea;
+import cm.milkywaylib.base.RenderBuffer;
+import cm.milkywaylib.buffers.Bounder;
 
 public class SceneIngame extends SceneSTG
 {
@@ -24,19 +26,21 @@ public class SceneIngame extends SceneSTG
     List<RenderBuffer> b2d = new List<>();
 
     Box4 scr = Box4.offset(170, 20, 460, 560);
-    BufBound point = new BufBound();
-    BufPlayer player;
-    RandomMap map = new RandomMap(3, 4);
+    Bounder point = new Bounder();
+    Player player;
+    RandomMap map = new RandomMap(1, 2, 3, 4);
     Bullets shoot = new Bullets(this);
     Act1 act1 = new Act1();
-    BufBullet c1;
-    BufDialog dialog;
+    Bullet c1;
+    Dialog dialog;
+    Enemy e1;
+    Enemies addEne = new Enemies(this);
 
     public void init()
     {
         super.init();
-        BufBullet c = new BufBullet();
-        c.pushTexture(Assets.bullet1);
+        Bullet.TEXTURE = Assets.bullet1;
+        Bullet c = new Bullet();
         c.box4().setSize(24, 24);
         c.box4().loc(400, 200);
         c.vec2().vec(1, time * 5);
@@ -44,19 +48,28 @@ public class SceneIngame extends SceneSTG
         c.retype(0);
         c.dye(map.rand());
         c1 = c;
-        addGroup("default");
+        e1 = new Enemy();
+        e1.setTexture(new AnimatedArea(Assets.enemy, 4, 2, 0).perTime(15), Enemy.STAY);
+        e1.setTexture(new AnimatedArea(Assets.enemy, 4, 2, 1).perTime(15), Enemy.MOVE);
+        e1.setMaxHealth(100);
+        e1.cure();
+        e1.box4().setSize(48, 48);
+        e1.bound().setSize(60, 60);
+        bullets.addGroup("default");
+        enemies.addGroup("default");
         point.box4().setSize(14, 14);
-        point.pushTexture(Assets.point);
+        point.setTexture(Area.create(Assets.point));
         point.bound().setSize(6, 6);
-        player = new BufPlayer(5.5, 2, point, new AnimatedRenderer(Assets.player1, 4, 2, 0).perTime(5), new AnimatedRenderer(Assets.player1, 4, 2, 1).perTime(5), Box4.offset(170, 20, 460, 560));
-        player.pushTexture(Assets.player1);
+        player = new Player(5.5, 2, point, Box4.offset(170, 20, 460, 560));
+        player.setTexture(new AnimatedArea(Assets.player1, 4, 2, 0).perTime(5), Player.STAY);
+        player.setTexture(new AnimatedArea(Assets.player1, 4, 2, 1).perTime(5), Player.MOVE);
         player.box4().setSize(42, 54);
         player.box4().loc(380, 420);
         player.vec2().vec(0, -90);
         Action.scene = this;
         Action.bullets = shoot;
         Action.player = player;
-        dialog = new BufDialog();
+        dialog = new Dialog();
         dialog.setColor(Color4.SHADOW);
         dialog.box4().loc(400, 500);
         dialog.box4().setSize(500, 100);
@@ -73,51 +86,70 @@ public class SceneIngame extends SceneSTG
 
     public void tickThen()
     {
+        if(time() % 100 == 0) {
+            addEne.add(e1, null, "default", scr.xc(), scr.y(), 2, 0);
+        }
         dialog.tick();
         Main.performed.tick();
         for(int i = 0; i < 1; i++) {
-            if(time % 3 != 0) {
+            if(time % 10 != 0) {
                 break;
             }
             c1.dye(map.rand());
             c1.retype(1);
-            shoot.ring(c1, act1, "default", 400, 100, 12, 0, 2, 90);
+            shoot.ring(c1, act1, "default", 400, 100, 36, 50, Maths.random(0.5, 3), Maths.random(0, 90));
             ///shoot.ring(c1, null, "default", 400, 200, 12, 50, 2,
             //        VMaths.degreeBetweenAB(player.box4().x(), player.box4().y(), 400, 200));
         }
-        if(TaskCaller.time % 100 == 0) {
-            RenderBuffer cp = new BufBound();
-            b2d.add(cp);
-            cp.pushTexture(Assets.moon);
-            cp.box4().setSize(0, 120);
+        if(TaskCaller.time % 500 == 0) {
+            ParticleAuto cp = new ParticleAuto();
+            particles.buf().add(cp);
+            cp.setTexture(Area.create(Assets.moon));
+            cp.box4().setSize(0, 0);
             cp.box4().loc(scr.x(), scr.y() - 82);
+            cp.size(1);
+            cp.opacity(-0.001);
+            cp.rotate(5);
         }
-        List<BufBullet> bullet = bullets.get("default");
-        for(int i = bullet.last(); i >= 0; i--) {
-            BufBullet r = bullet.get(i);
-            if(r != null) {
-                r.tick();
-                if(!r.box4().boundAsRct(scr) || r.isForRemove()) {
-                    bullet.remove(i);
-                    bulletPool.reuse(r);
-                }
-                if(player.hasBound() && player.bound().boundAsCir(r.bound())) {
-                    player.beShot();
-                    ClipPlayer.play("sounds/effect/player_die.wav");
+        List<Bullet> bullet = bullets.getGroup("default").buf();
+        List<Enemy> enemy = enemies.getGroup("default").buf();
+        for(int e = enemy.last(); e >= 0; e--) {
+            Enemy ene = enemy.get(e);
+            ene.tick();
+            if(!ene.box4().boundAsRct(scr) || ene.isForRemove()) {
+                enemy.remove(e);
+            }
+            for(int i = bullet.last(); i >= 0; i--) {
+                Bullet r = bullet.get(i);
+                if(r != null) {
+                    if(e == 0) {
+                        r.tick();
+                    }
+                    if(!r.box4().boundAsRct(scr) || r.isForRemove()) {
+                        bullet.remove(i);
+                        bulletPool.reuse(r);
+                    }
+                    if(ene.action() != null) {
+                        ene.action().buf = ene;
+                        ene.action().tickWith(r);
+                    }
+                    if(ene.bound().boundAsCir(r.bound())) {
+                        ene.beShot(0);
+                    }
+                    if(player.hasBound() && player.bound().boundAsCir(r.bound())) {
+                        player.beShot();
+                        ClipPlayer.play("sounds/effect/player_die.wav");
+                    }
                 }
             }
         }
-        for(int i = b2d.last(); i >= 0; i--) {
-            RenderBuffer r = b2d.get(i);
-            if(r != null) {
-                r.tick();
-                r.effect().mvOpacity(-0.001);
-                r.box4().mvSize(4, 4);
-                if(r.effect().opacity() <= 0) {
-                    b2d.remove(i);
-                }
+        particles.buf().iterate((o, i) -> {
+            o.tick();
+            if(o.isForRemove()) {
+                particles.buf().remove(i);
             }
-        }
+        }, true);
+
         player.tick();
 
         if(InputMap.isOn(Key.key("ctrl"))) {
@@ -146,14 +178,13 @@ public class SceneIngame extends SceneSTG
 
         Main.performed.render();
 
+        enemies.render();
         player.render();
-        List<BufBullet> bullet = bullets.get("default");
-        for(int i = bullet.last(); i >= 0; i--) {
-            GLRenderable r = bullet.get(i);
-            if(r != null) {
-                r.render();
-            }
-        }
+        bullets.render();
+
+        particles.buf().iterate((o, i) -> {
+            o.render();
+        }, true);
 
         GL.gl.curState().font(Assets.ch);
         dialog.render();
@@ -163,7 +194,7 @@ public class SceneIngame extends SceneSTG
         //player.render();
         GL.gl.curState().font(Assets.en);
         GL.gl.curState().color(Color4.GOLD);
-        GL.gl2f.text("Bullet Count: " + Data.toString(bullet.size()), 20, 570, false);
+        GL.gl2f.text("Bullet Count: " + Data.toString(bullets.getGroup("default").buf().size()), 20, 570, false);
         GL.gl2f.text(Data.toString(TaskCaller.nowFpsRender), 200, 570, false);
         GL.gl2f.text(Data.toString(TaskCaller.nowFpsUpdate), 300, 570, false);
         //GL.gl2.vertex(Assets.character, 50, 30, 170, 170);

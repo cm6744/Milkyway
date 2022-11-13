@@ -10,14 +10,19 @@ public abstract class Box4
 
     double x, y, width, height;
 
-    public static Box4 normal()
+    public static Box4 normalInset()
     {
         return new BoxInset();
     }
 
+    public static Box4 normalOffset()
+    {
+        return new BoxOffset();
+    }
+
     public static Box4 inset(double w, double h)
     {
-        return new BoxInset().setSize(w, h);
+        return normalInset().setSize(w, h);
     }
 
     public static Box4 inset(double x, double y, double w, double h)
@@ -27,7 +32,7 @@ public abstract class Box4
 
     public static Box4 offset(double w, double h)
     {
-        return new BoxOffset().setSize(w, h);
+        return normalOffset().setSize(w, h);
     }
 
     public static Box4 offset(double x, double y, double w, double h)
@@ -59,6 +64,13 @@ public abstract class Box4
         return this;
     }
 
+    public Box4 mulSize(double w, double h)
+    {
+        mulWidth(w);
+        mulHeight(h);
+        return this;
+    }
+
     public Box4 mvWidth(double m)
     {
         width += m;
@@ -71,6 +83,12 @@ public abstract class Box4
         return this;
     }
 
+    public Box4 mulWidth(double v)
+    {
+        width *= v;
+        return this;
+    }
+
     public Box4 mvHeight(double m)
     {
         height += m;
@@ -80,6 +98,12 @@ public abstract class Box4
     public Box4 setHeight(double v)
     {
         height = v;
+        return this;
+    }
+
+    public Box4 mulHeight(double v)
+    {
+        height *= v;
         return this;
     }
 
