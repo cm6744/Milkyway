@@ -1,86 +1,63 @@
 package cm.milkywaylib.base;
 
-import cm.milkywaygl.Platform;
-import cm.milkywaygl.TaskCaller;
-import cm.milkywaygl.interfac.GLRenderable;
-import cm.milkywaygl.interfac.GLTimeline;
-import cm.milkywaygl.maths.check.Box4;
-import cm.milkywaygl.maths.check.Effect;
-import cm.milkywaygl.maths.check.Vec2;
-import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.wrapper.Area;
-import cm.milkywaygl.util.container.List;
-import cm.milkywaygl.util.container.Map;
-import cm.milkywaytype.stg.Player;
+import cm.milkywaygl.Milkyway;
+import cm.milkywaygl.render.g2d.Area;
+import cm.milkywaytool.container.Map;
+import cm.milkywaytool.physics.Rect;
 
-public class RenderBuffer extends GLTimeline implements GLRenderable
+public class RenderBuffer extends Timeline
 {
-
-    //default part.
-    public static final String DEFAULT = "default";
 
     //null values default!
     protected Map<String, Area> textures = new Map<>();
+    private Area defaultCache;
 
-    protected Box4 box4 = Box4.normalInset();
-    protected Vec2 vec2 = Vec2.normal();
+    protected Rect renderBox = new Rect();
+    protected VecInfo vecInfo = VecInfo.normal();
     protected Effect effect = Effect.normal();
-    protected int time;
     protected boolean forRemove;
 
     public RenderBuffer()
     {
-        if(!TaskCaller.isPreInitialized()) {
-            Platform.error("cannot create buffer before pre-init end!");
-        }
-    }
-
-    public void tick()
-    {
-        //ticking Areas...
-        List<Area> lst = textures.toList();
-        for(int i = 0; i < lst.size(); i++) {
-            lst.get(i).tick();
-        }
-
-        super.tick();
     }
 
     public void tickThen()
     {
-        box4().loc(vec2.applyX(box4.x()), vec2.applyY(box4.y()));
+        renderBox.loc(vecInfo.applyX(renderBox.x()), vecInfo.applyY(renderBox.y()));
     }
 
     public void render()
     {
-        GL.gl.save();
+        Milkyway.glBase.curState().clear();
 
-        GL.gl.curState().rotate(effect.rotation(), box4.x(), box4.y());
-        GL.gl.curState().opacity(effect.opacity());
-        double x = box4.xc();
-        double y = box4.yc();
-        double w = box4.width();
-        double h = box4.height();
+        Milkyway.glBase.curState().rotate(effect.rotation());
+        Milkyway.glBase.curState().opacity(effect.opacity());
+
+        double x = renderBox.xc();
+        double y = renderBox.yc();
+        double w = renderBox.w();
+        double h = renderBox.h();
+
         renderThen(x, y, w, h);
 
-        GL.gl.read();
+        Milkyway.glBase.curState().clear();
     }
 
     public void renderThen(double x, double y, double w, double h)
     {
         if(texture() != null) {
-            GL.gl2.dim(texture(), x, y, w, h);
+            Milkyway.gl2d.dim(texture(), x, y, w, h);
         }
     }
 
-    public Box4 box4()
+    public Rect box()
     {
-        return box4;
+        return renderBox;
     }
 
-    public Vec2 vec2()
+    public VecInfo vec()
     {
-        return vec2;
+        return vecInfo;
     }
 
     public Effect effect()
@@ -107,7 +84,7 @@ public class RenderBuffer extends GLTimeline implements GLRenderable
 
     public void setTexture(Area tex)
     {
-        setTexture(tex, DEFAULT);
+        defaultCache = tex;
     }
 
     public void setTexture(Area tex, String part)
@@ -117,7 +94,7 @@ public class RenderBuffer extends GLTimeline implements GLRenderable
 
     public Area texture()
     {
-        return texture(DEFAULT);
+        return defaultCache;
     }
 
     public Area texture(String part)

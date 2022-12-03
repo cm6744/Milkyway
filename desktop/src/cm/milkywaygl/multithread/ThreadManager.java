@@ -1,28 +1,28 @@
 package cm.milkywaygl.multithread;
 
-import cm.milkywaygl.interfac.GLTickable;
-import cm.milkywaygl.util.container.Map;
+import cm.milkywaytool.Task;
+import cm.milkywaytool.container.Map;
 
 public class ThreadManager
 {
 
-    static Map<GLTickable, RThread> threads = new Map<>();
+    static Map<Task, RThread> threads = new Map<>();
 
     //put up a new thread to run ThreadTask
-    public static void join(GLTickable r)
+    public static void join(Task r)
     {
         RThread thread = new RThread(r);
         threads.put(r, thread);
     }
 
     //return start() is invoked
-    public static boolean isStarted(GLTickable r)
+    public static boolean isStarted(Task r)
     {
         return threads.get(r).isStarted;
     }
 
     //start the thread
-    public static void start(GLTickable r)
+    public static void start(Task r)
     {
         threads.get(r).start();
     }
@@ -30,17 +30,17 @@ public class ThreadManager
     //stop the thread
     //if ThreadTask.run is a while-loop task
     //use while(ThreadManager.isNotDisposed) {...}
-    public static void dispose(GLTickable r)
+    public static void dispose(Task r)
     {
         threads.get(r).dispose();
     }
 
-    public static boolean isNotDisposed(GLTickable r)
+    public static boolean isNotDisposed(Task r)
     {
         return !threads.get(r).isInterrupted();
     }
 
-    public static void sleep(GLTickable r, int ms)
+    public static void sleep(Task r, int ms)
     {
         threads.get(r).sleep(ms);
     }
@@ -48,10 +48,10 @@ public class ThreadManager
     private static class RThread extends Thread
     {
 
-        GLTickable task;
+        Task task;
         boolean isStarted;
 
-        public RThread(GLTickable r)
+        public RThread(Task r)
         {
             task = r;
         }
@@ -69,7 +69,7 @@ public class ThreadManager
 
         public void run()
         {
-            task.tick();
+            task.run();
         }
 
         public void sleep(int ms)

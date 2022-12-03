@@ -3,6 +3,7 @@ package cm.milkywaygl;
 /**
  * @author cm
  */
+@BackendMark
 public class Platform
 {
 

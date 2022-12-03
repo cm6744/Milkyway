@@ -1,18 +1,16 @@
 package cm.milkywaylib.base;
 
-import cm.milkywaygl.interfac.GLRenderable;
-import cm.milkywaygl.maths.check.Effect;
-import cm.milkywaygl.maths.check.Vec3;
-import cm.milkywaygl.render.GL;
-import cm.milkywaygl.util.IntBuffer;
+import cm.milkywaygl.Milkyway;
+import cm.milkywaygl.render.g3d.Model3DObject;
+import cm.milkywaytool.physics.Vec3;
 
-public class ModelBuffer implements GLRenderable
+public class ModelBuffer
 {
 
     Vec3 axisSpeed;
     Vec3 pos;
     Effect effect;
-    IntBuffer bind;
+    Model3DObject bind;
 
     public ModelBuffer()
     {
@@ -23,25 +21,25 @@ public class ModelBuffer implements GLRenderable
 
     public void tick()
     {
-        pos.mvVec(axisSpeed.x(), axisSpeed.y(), axisSpeed.z());
+        pos.trs(axisSpeed.x(), axisSpeed.y(), axisSpeed.z());
     }
 
     public void render()
     {
-        GL.gl.save();
+        Milkyway.glBase.curState().clear();
 
-        GL.gl.curState().opacity(effect.opacity());
-        GL.gl3.render(bind, pos.x(), pos.y(), pos.z());
+        Milkyway.glBase.curState().opacity(effect.opacity());
+        Milkyway.gl3d.render(bind, pos.x(), pos.y(), pos.z());
 
-        GL.gl.read();
+        Milkyway.glBase.curState().clear();
     }
 
-    public void pushBind(IntBuffer b)
+    public void pushBind(Model3DObject b)
     {
         bind = b;
     }
 
-    public IntBuffer bind()
+    public Model3DObject bind()
     {
         return bind;
     }

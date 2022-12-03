@@ -27,4 +27,8 @@ public class InputCallback
     {
     }
 
+    public void mouseScroll(double delta)
+    {
+    }
+
 }

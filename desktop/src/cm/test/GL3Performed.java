@@ -1,60 +1,68 @@
 package cm.test;
 
-import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.wrapper.Color4;
-import cm.milkywaygl.util.IntBuffer;
-import cm.milkywaygl.util.container.List;
+import cm.milkywaygl.Milkyway;
+import cm.milkywaygl.render.GLBase;
+import cm.milkywaygl.render.g2d.Color4;
+import cm.milkywaygl.render.g3d.Camera;
+import cm.milkywaygl.render.g3d.Model3D;
 import cm.milkywaylib.base.ModelBuffer;
+import cm.milkywaytool.container.List;
+import cm.milkywaytool.maths.Mth;
 
 public class GL3Performed
 {
 
-    public GL gl;
+    public GLBase gl;
 
     public List<ModelBuffer> inss = new List<>();
-    public double sped = 0.2;
+    public double sped = -0.5;
     public boolean newBoj = true;
-    IntBuffer md;
-    IntBuffer roof;
+    Model3D md;
+    Model3D roof;
 
-    public GL3Performed(GL g)
+    public GL3Performed(GLBase g)
     {
         gl = g;
     }
 
     public void init()
     {
-        GL.gl3.cameraPos(0, 0, 10);
-        GL.gl3.cameraLookPos(-7, 0, 0);
-        GL.gl3.cameraSight(1, 2000, 1000);
-        md = GL.gl3.genModel(700, 420, 5);
-        GL.gl3.modelBindTex(md, Assets.win);
-        roof = GL.gl3.genModel(700, 2, 420);
-        GL.gl3.modelBindColor(roof, Color4.BLACK);
+        Camera camera = Milkyway.gl3d.camera();
+        camera.pos(0, 0, 10);
+        camera.lookPos(7, 0, 10);
+        camera.sight(1, 2900, 2900);
+        md = Milkyway.gl3d.genModel(700, 420, 5);
+        md.bind(Assets.loader.getTex("window"));
+        roof = Milkyway.gl3d.genModel(700, 2, 420);
+        roof.bind(Color4.C0001);
         addPair(0);
-        addPair(-700);
-        addPair(-1400);
-        addPair(-2100);
+        addPair(700);
+        addPair(1400);
+        addPair(2100);
+        addPair(2800);
+        addPair(3500);
+
     }
 
     private void addPair(float x)
     {
         ModelBuffer b1 = new ModelBuffer();
-        b1.pushBind(GL.gl3.createObj(md));
-        b1.pos().vec(x, 0, -200);
+        b1.pushBind(md.newInstance());
+        b1.pos().set(x, 0, -200);
         ModelBuffer b4 = new ModelBuffer();
-        b4.pushBind(GL.gl3.createObj(md));
-        b4.pos().vec(x, 0, 200);
+        b4.pushBind(md.newInstance());
+        b4.pos().set(x, 0, 200);
         ModelBuffer b2 = new ModelBuffer();
-        b2.pushBind(GL.gl3.createObj(roof));
-        b2.pos().vec(x, 210, -10);
+        b2.pushBind(roof.newInstance());
+        b2.pos().set(x, 210, -10);
         ModelBuffer b3 = new ModelBuffer();
-        b3.pushBind(GL.gl3.createObj(roof));
-        b3.pos().vec(x, -210, -10);
+        b3.pushBind(roof.newInstance());
+        b3.pos().set(x, -210, -10);
         inss.add(b1);
         inss.add(b2);
         inss.add(b3);
         inss.add(b4);
+        b1.effect().setRotation(Mth.random() * 30);
     }
 
     public void tick()
@@ -63,17 +71,17 @@ public class GL3Performed
         float lastX = 0;
         for(int i = inss.last(); i >= 0; i--) {
             ModelBuffer in = inss.get(i);
-            in.pos().mvVec(sped, 0, 0);
-            if(in.pos().x() >= 700) {
+            in.pos().trs(sped, 0, 0);
+            if(in.pos().x() <= -700) {
                 add = true;
                 inss.remove(i);
             }
-            if(in.pos().x() < lastX) {
+            if(in.pos().x() > lastX) {
                 lastX = (float) in.pos().x();
             }
         }
         if(add && newBoj) {
-            addPair(lastX - 700);
+            addPair(lastX + 700);
         }
     }
 

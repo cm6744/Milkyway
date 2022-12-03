@@ -1,16 +1,30 @@
 package cm.milkywaylib.buffers;
 
-import cm.milkywaygl.maths.check.Box4;
 import cm.milkywaylib.base.RenderBuffer;
+import cm.milkywaytool.physics.Shape;
 
-public class Bounder extends RenderBuffer
+public abstract class Bounder<TYPE extends Shape> extends RenderBuffer
 {
 
-    protected Box4 bound = Box4.normalInset();
+    protected TYPE bound;
+    protected boolean allowBoundRotate;
 
-    public Box4 bound()
+    public Bounder()
     {
-        bound.loc(box4.x(), box4.y());
+        initBound();
+    }
+
+    protected abstract void initBound();
+
+    public TYPE bound()
+    {
+        bound.loc(renderBox.x(), renderBox.y());
+        if(allowBoundRotate) {
+            bound.setRotation(vecInfo.degree());
+        }
+        else {
+            bound.setRotation(0);
+        }
         return bound;
     }
 

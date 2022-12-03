@@ -24,7 +24,6 @@ public class SceneManager
     public static void tick()
     {
         if(nowScene != null) {
-            //promote after ticking
             nowScene.tick();
             nowScene.shadow().tickTurning();
         }

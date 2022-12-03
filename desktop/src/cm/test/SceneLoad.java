@@ -1,51 +1,47 @@
 package cm.test;
 
-import cm.milkywaygl.render.GL;
-import cm.milkywaygl.TaskCaller;
-import cm.milkywaygl.render.wrapper.Area;
-import cm.milkywaylib.buffers.ProgressLine;
+import cm.milkywaygl.Milkyway;
+import cm.milkywaygl.render.g2d.BufferTex;
 import cm.milkywaylib.base.Scene;
 import cm.milkywaylib.base.SceneManager;
+import cm.stgtype.Bullet;
+import cm.stgtype.BulletMap;
+import cm.stgtype.Enemy;
 
 public class SceneLoad extends Scene
 {
 
-    ProgressLine progress = new ProgressLine();
+    BufferTex tex = Milkyway.graphics.newTex();
 
     public void init()
     {
-        Main.performed = new GL3Performed(GL.gl);
-        Main.performed.init();
-        progress.box4().loc(400, 550);
-        progress.box4().setSize(800, 1.5);
-        Area em = Area.dim01(Assets.progress, 0, 0.5, 1, 0.5);
-        progress.setTexture(em, ProgressLine.EMPTY);
-        Area f = Area.dim01(Assets.progress, 0, 0, 1, 0.5);
-        progress.setTexture(f, ProgressLine.FULL);
+        Assets.loadAll();
+        Milkyway.gl2d.loadTexture(tex, "textures/logo.png");
     }
 
     public void tickThen()
     {
-        Main.performed.tick();
-        if(TaskCaller.isTickCalm()) {
-            Assets.loading.update();
+        if(time() >= 20) {
+            Assets.loader.update();
         }
+        if(Assets.loader.isDone()) {
 
-        if(Assets.loading.isDone()) {
+            BulletMap.SIZE16 = Assets.loader.getTex("b16");
+            BulletMap.SIZE32 = Assets.loader.getTex("b32");
+            BulletMap.SIZE64 = Assets.loader.getTex("b64");
+            Bullet.FOG = Assets.loader.getTex("bulletFogs");
+            BulletMap.registerAll();
+
+            Enemy.SHOOT_UP = Assets.loader.getTex("magicCir");
+            Enemy.HURT = Assets.loader.getTex("fire");
             SceneManager.scene(new SceneMenu());
         }
     }
 
     public void render()
     {
-        GL.gl.clear();
-        double pro = Assets.loading.progress();
-        GL.gl2.dim(Assets.stg6bg, 0, 0, 800, 600);
-        Main.performed.render();
-        GL.gl2.dim(Assets.loadingFont, 5, 570, 128, 32);
-        progress.value(pro);
-        progress.render();
-        GL.gl.freeAll();
+        Milkyway.gl2d.dim(tex, 0, 0, 640, 480);
+        Milkyway.glBase.freeAll();
     }
 
 }

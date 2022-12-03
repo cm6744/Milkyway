@@ -1,21 +1,22 @@
 package cm.milkywaylib.buffers;
 
-import cm.milkywaygl.render.GL;
+import cm.milkywaygl.Milkyway;
+import cm.glbackends.gdx.JsonOGdx;
 import cm.milkywaygl.input.InputMap;
-import cm.milkywaygl.render.wrapper.Color4;
 import cm.milkywaygl.input.Key;
-import cm.milkywaygl.text.JsonFile;
-import cm.milkywaygl.util.container.List;
+import cm.milkywaygl.input.Keys;
+import cm.milkywaygl.render.g2d.Font2;
+import cm.milkywaygl.render.g2d.Text;
 import cm.milkywaylib.base.RenderBuffer;
+import cm.milkywaytool.container.List;
 
 public class Dialog extends RenderBuffer
 {
 
     public static final String V_TEXT = "text";
 
-    List<String> text = new List<>();
-    Color4 color;
-    Key key = Key.key("z");
+    List<Text> text = new List<>();
+    Key key = Milkyway.keys.key("z");
 
     boolean disposed = false;
 
@@ -39,39 +40,29 @@ public class Dialog extends RenderBuffer
             return;
         }
 
-        if(color != null) {
-            GL.gl.curState().color(color);
-            GL.gl4.dim(box4);
-        }
-        else if(texture() != null) {
-            GL.gl2.dim(texture(), box4);
+        if(texture() != null) {
+            Milkyway.gl2d.dim(texture(), renderBox);
         }
 
         if(text != null) {
-            for(int i = 0; i < text.size(); i++) {
-                GL.gl2f.text(
-                        text.get(i),
-                        box4.xc() + box4.width() * 0.2,
-                        box4.yc() + box4.height() * 0.2 + i * GL.gl.curState().fontNow.size,
+            text.iterate((o, i) -> {
+                o.render(
+                        renderBox.xc() + renderBox.w() * 0.2,
+                        renderBox.yc() + renderBox.h() * 0.2 + i * text.get(i).size(),
                         false
                 );
-            }
+            }, false);
         }
     }
 
-    public void append(String txt)
+    public void append(Text txt)
     {
         text.add(txt);
     }
 
-    public void from(JsonFile txt)
+    public void from(Font2 font2, JsonOGdx txt)
     {
-        txt.toMap().iterate((o, i) -> append(o.entry(V_TEXT).toString()), false);
-    }
-
-    public void setColor(Color4 c4)
-    {
-        color = c4;
+        txt.toMap().iterate((o, i) -> append(Text.create(font2, o.entry(V_TEXT).asString())), false);
     }
 
 }

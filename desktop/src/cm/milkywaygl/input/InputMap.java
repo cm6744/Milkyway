@@ -1,20 +1,20 @@
 package cm.milkywaygl.input;
 
-import cm.milkywaygl.render.GL;
+import cm.milkywaygl.Milkyway;
 
 public class InputMap
 {
 
-    //PROBABLY NATIVE INVOKES
     public static boolean[] keyState = new boolean[256];
     public static boolean[] mouseState = new boolean[3];
 
-    //END REGION
     public static int[] keyTimer = new int[256];
     public static int[] mouseTimer = new int[3];
 
     public static double mx, my;
     public static String inputString;
+    public static double scroll;
+    public static int timerNotScroll;
 
     public static void keyStateUpdate()
     {
@@ -33,6 +33,13 @@ public class InputMap
             else {
                 mouseTimer[i] = 0;
             }
+        }
+        if(timerNotScroll > 0) {
+            scroll = 0;
+            timerNotScroll = 0;
+        }
+        if(scroll != 0) {
+            timerNotScroll++;
         }
     }
 
@@ -62,12 +69,17 @@ public class InputMap
 
     public static double x()
     {
-        return (mx - GL.gl.cornerX) / GL.gl.zoom;
+        return Milkyway.glBase.calcMX(mx);
     }
 
     public static double y()
     {
-        return (my - GL.gl.cornerY) / GL.gl.zoom;
+        return Milkyway.glBase.calcMY(my);
+    }
+
+    public static double scroll()
+    {
+        return scroll;
     }
 
 }

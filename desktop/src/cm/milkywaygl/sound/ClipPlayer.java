@@ -1,5 +1,8 @@
 package cm.milkywaygl.sound;
 
+import cm.milkywaygl.Milkyway;
+import cm.milkywaygl.TaskCaller;
+
 public class ClipPlayer
 {
 
@@ -8,14 +11,15 @@ public class ClipPlayer
 
     public static void openIf()
     {
+        TaskCaller.checkPreInit();
         if(!opened) {
-            clipThread = new SoundDevice();
-            clipThread.startDevice();
+            clipThread = Milkyway.audio.newDevice();
+            clipThread.start();
         }
         opened = true;
     }
 
-    public static void play(String sound)
+    public static void play(Sound sound)
     {
         openIf();
         clipThread.play(sound);

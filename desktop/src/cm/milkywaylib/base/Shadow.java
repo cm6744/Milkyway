@@ -1,12 +1,15 @@
 package cm.milkywaylib.base;
 
-import cm.milkywaygl.maths.LimitValue;
-import cm.milkywaygl.render.GL;
-import cm.milkywaygl.render.nativegl.Context;
-import cm.milkywaygl.render.wrapper.Color4;
+import cm.milkywaygl.Milkyway;
+import cm.milkywaygl.render.Window;
+import cm.milkywaygl.render.g2d.Area;
+import cm.milkywaygl.render.g2d.AreaColored;
+import cm.milkywaygl.render.g2d.Color4;
 
 public class Shadow
 {
+
+    public static Area DEFAULT_AREA = AreaColored.create(Color4.C0001);
 
     double turnProgress;
     double turnChange;
@@ -14,15 +17,23 @@ public class Shadow
     boolean turnOut;
     double turnSpeed;
     Scene next;
+    Area area;
 
     public Shadow(double speed)
     {
         turnSpeed = speed;
+
+        setArea(DEFAULT_AREA.copy());
     }
 
     public Shadow()
     {
-        this(0.01);
+        this(0.1);
+    }
+
+    public void setArea(Area a)
+    {
+        area = a;
     }
 
     public void turnIn(Scene scene)
@@ -58,25 +69,29 @@ public class Shadow
                 turnIn = turnOut = false;
             }
         }
-        if(turnChange > 0) {
-            turnProgress = LimitValue.ofDouble(turnProgress, turnChange, 1);
+        turnProgress += turnChange;
+        if(turnProgress > 1) {
+            turnProgress = 1;
         }
-        else {
-            turnProgress = LimitValue.ofDouble(turnProgress, turnChange, 0);
+        if(turnProgress < 0) {
+            turnProgress = 0;
         }
+    }
+
+    public void progress(double turn)
+    {
+        turnProgress = turn;
     }
 
     public void renderTurning()
     {
-        GL.gl.save();
+        Window win = Milkyway.window;
 
-        GL.gl.curState().opacity(turnProgress);
-        GL.gl.curState().color(Color4.BLACK);
-        GL.gl4.dim(0, 0, Context.width(), Context.height());
+        Milkyway.glBase.curState().opacity(turnProgress);
+        Milkyway.gl2d.dim(area, 0, 0, win.width(), win.height());
+        Milkyway.glBase.curState().clear();
 
-        GL.gl.read();
-
-        GL.gl.freeAll();
+        Milkyway.glBase.freeAll();
     }
 
 }
