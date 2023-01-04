@@ -1,14 +1,15 @@
 package cm.typestg;
 
-import cm.milkyway.Milkyway;
+import cm.backends.lwjgl.LwjglKey;
 import cm.milkyway.opengl.input.InputMap;
 import cm.milkyway.opengl.input.Key;
 import cm.milkyway.opengl.render.g2d.Area;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkywayx.widgetx.base.Effect;
 import cm.milkywayx.widgetx.base.RenderBuffer;
 import cm.milkywayx.widgetx.widget.Bounder;
 import cm.milkyway.lang.maths.Mth;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 
 public class Player extends Bounder<Rect>
 {
@@ -51,11 +52,11 @@ public class Player extends Bounder<Rect>
         sizeMax = point.box().w();
         moveDimension = moveDim;
         keyBind(
-                Milkyway.keys.key("right"),
-                Milkyway.keys.key("left"),
-                Milkyway.keys.key("up"),
-                Milkyway.keys.key("down"),
-                Milkyway.keys.key("shift")
+                LwjglKey.key("right"),
+                LwjglKey.key("left"),
+                LwjglKey.key("up"),
+                LwjglKey.key("down"),
+                LwjglKey.key("shift")
         );
     }
 
@@ -158,29 +159,30 @@ public class Player extends Bounder<Rect>
         }
     }
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         if(canRender()) {
-            magic.render();
+            magic.render(g);
             Area moveTimeline = texture(MOVE);
             Area stayTimeline = texture(STAY);
             if(left) {
-                Milkyway.gl2d.dim(moveTimeline, renderBox);
+                g.draw(moveTimeline, renderBox);
             }
             else if(right) {
-                Milkyway.glBase.state().mirrored(true);
-                Milkyway.gl2d.dim(moveTimeline, renderBox);
+                g.setFlipX(true);
+                g.draw(moveTimeline, renderBox);
+                g.setFlipX(false);
             }
             else {
-                Milkyway.gl2d.dim(stayTimeline, renderBox);
+                g.draw(stayTimeline, renderBox);
             }
         }
     }
 
-    public void renderPoint()
+    public void renderPoint(Graphics2D g)
     {
         if(canRender()) {
-            boundPoint.render();
+            boundPoint.render(g);
         }
     }
 

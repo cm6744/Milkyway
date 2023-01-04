@@ -2,9 +2,8 @@ package cm.typestg;
 
 import cm.milkyway.opengl.render.g2d.Area;
 import cm.milkyway.opengl.render.g2d.AreaStatic;
-import cm.milkyway.opengl.audio.ClipPlayer;
 import cm.milkywayx.particlex.Particle;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.maths.Mth;
 import cm.milkyway.lang.maths.VecMth;
 import cm.typestg.act.Action;
@@ -144,7 +143,7 @@ public class Shooter
         if(group != null) {
             group.add(bul);
         }
-        ClipPlayer.play(BulletMap.type_sound_mat[bul.type()]);
+        Sounds.clip.play(BulletMap.type_sound_mat[bul.type()]);
     }
 
     public void add(Bullet copy, Action<Bullet> action, List<Bullet> group,

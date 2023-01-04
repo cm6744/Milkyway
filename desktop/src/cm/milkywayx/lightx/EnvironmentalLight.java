@@ -1,5 +1,7 @@
 package cm.milkywayx.lightx;
 
+import cm.milkyway.lang.maths.Mth;
+
 public class EnvironmentalLight extends Light
 {
 
@@ -9,10 +11,10 @@ public class EnvironmentalLight extends Light
     public void updateSmooth()
     {
         if(goal > intensity && trueUp) {
-            intensity += (goal - intensity) / 120;
+            intensity = Mth.min(goal, intensity + 0.01);
         }
         else if(goal < intensity && !trueUp) {
-            intensity += (goal - intensity) / 120;
+            intensity = Mth.max(goal, intensity - 0.01);
         }
     }
 

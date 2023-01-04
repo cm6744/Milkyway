@@ -1,29 +1,29 @@
 package cm.milkyway.opengl.render.g2d;
 
-import cm.milkyway.Milkyway;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 
 public class Text
 {
 
-    Font2 font;
+    Font font;
+    Color color;
     String component;
 
-    public static Text create(Font2 font, String comp)
+    public static Text create(Font font, Color col, String comp)
     {
-        return new Text(font, comp);
+        return new Text(font, col, comp);
     }
 
-    private Text(Font2 f, String c)
+    private Text(Font f, Color col, String c)
     {
         font = f;
         component = c;
+        color = col;
     }
 
-    public void render(double x, double y, boolean center)
+    public void render(Graphics2D g, double x, double y, boolean center)
     {
-        Milkyway.glBase.state().font(font);
-        Milkyway.glText.text(component, x, y, center);
-        Milkyway.glBase.state().clear();
+        g.drawText(font, color, component, x, y, center);
     }
 
     public double size()

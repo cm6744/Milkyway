@@ -1,8 +1,8 @@
 package cm.milkywayx.widgetx.widget.button;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.input.Key;
 import cm.milkyway.opengl.render.g2d.Text;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkywayx.widgetx.base.RenderBuffer;
 
 //Needs texture format:
@@ -23,22 +23,22 @@ public abstract class Button extends RenderBuffer
         key = code;
     }
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         countDown--;
 
         if(isInDownState()) {
-            Milkyway.gl2d.dim(texture(DOWN), renderBox);
+            g.draw(texture(DOWN), renderBox);
         }
         else if(hangOn()) {
-            Milkyway.gl2d.dim(texture(HANG), renderBox);
+            g.draw(texture(HANG), renderBox);
         }
         else {
-            Milkyway.gl2d.dim(texture(UP), renderBox);
+            g.draw(texture(UP), renderBox);
         }
 
         if(text != null) {
-            text.render(renderBox.x(), renderBox.y(), true);
+            g.draw(text, renderBox.x(), renderBox.y(), true);
         }
     }
 

@@ -1,14 +1,14 @@
 package cm.milkywayx.widgetx.widget.button;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.input.InputMap;
+import cm.milkyway.opengl.input.Key;
 
 public class ButtonMouse extends Button
 {
 
-    public ButtonMouse()
+    public ButtonMouse(Key k)
     {
-        key = Milkyway.keys.mouse("left");
+        key = k;
     }
 
     public boolean hangOn()

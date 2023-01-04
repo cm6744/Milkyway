@@ -1,8 +1,8 @@
 package cm.typestg;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.opengl.render.g2d.BufferTex;
-import cm.milkywayx.widgetx.base.Scene;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+import cm.milkywayx.widgetx.scene.Scene;
 import cm.milkyway.lang.maths.Mth;
 
 import static cm.typestg.Scr.scr;
@@ -10,39 +10,39 @@ import static cm.typestg.Scr.scr;
 public class Roller extends Scene
 {
 
-    BufferTex bufferTex;
-    BufferTex overlay;
+    Tex Tex;
+    Tex overlay;
     double spd;
     double yOffset;
     double w, h;
 
-    public void rolling(BufferTex tex, double speed)
+    public void rolling(Tex tex, double speed)
     {
-        bufferTex = tex;
+        Tex = tex;
         spd = speed;
     }
 
-    public void overlay(BufferTex over)
+    public void overlay(Tex over)
     {
         overlay = over;
     }
 
-    public void overlayRender()
+    public void overlayRender(Graphics2D g)
     {
-        Milkyway.glBase.state().opacity(Mth.min(1, time() * 0.05));
-        Milkyway.gl2d.dim(overlay, scr);
+        g.setOpacity(Mth.min(1, time() * 0.05));
+        g.draw(overlay, scr);
     }
 
-    public void rollingRender()
+    public void rollingRender(Graphics2D g)
     {
-        Milkyway.glBase.state().opacity(Mth.min(1, time() * 0.05));
-        Milkyway.gl2d.dim(bufferTex, scr, 0, yOffset, w, h);
+        g.setOpacity(Mth.min(1, time() * 0.05));
+        g.draw(Tex, scr.xc(), scr.yc(), scr.w(), scr.h(), 0, yOffset, w, h);
     }
 
     public void tickThen()
     {
-        w = bufferTex.w();
-        h = bufferTex.h() / 2;
+        w = Tex.w();
+        h = Tex.h() / 2;
         yOffset -= spd;
         if(yOffset > h) {
             yOffset -= h;
@@ -52,7 +52,7 @@ public class Roller extends Scene
         }
     }
 
-    public void render()
+    public void render(Graphics2D g)
     {
     }
 

@@ -1,6 +1,6 @@
 package cm.milkyway.lang.text;
 
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 
 public class Data
 {

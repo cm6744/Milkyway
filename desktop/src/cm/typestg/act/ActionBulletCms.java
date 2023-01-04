@@ -1,5 +1,6 @@
 package cm.typestg.act;
 
+import cm.milkyway.lang.io.AccessLocal;
 import cm.milkywayx.scriptx.cls.compile.CLS;
 import cm.milkywayx.scriptx.cls.compile.CLSCompiler;
 import cm.milkywayx.scriptx.cls.compile.CLSCompiler900;
@@ -18,7 +19,7 @@ public class ActionBulletCms extends Action<Bullet>
         compiler.using(new StdLib());
         compiler.using(new MathLib());
         compiler.using(new ActionBufferLib(this));
-        cls = compiler.compileFile(file);
+        cls = compiler.compileFile(new AccessLocal(file));
     }
 
     public void tickThen()

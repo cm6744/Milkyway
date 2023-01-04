@@ -1,9 +1,9 @@
 package cm.typestg;
 
-import cm.milkywayx.widgetx.base.Scene;
+import cm.milkywayx.widgetx.scene.Scene;
 import cm.milkywayx.particlex.Particle;
-import cm.milkyway.lang.cache.Pool;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.util.Pool;
+import cm.milkyway.lang.container.list.List;
 
 public class SceneSTG extends Scene
 {

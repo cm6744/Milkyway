@@ -1,16 +1,17 @@
 package cm.milkyway.opengl.render.g3d;
 
-import cm.milkyway.opengl.render.g2d.BufferTex;
-import cm.milkyway.opengl.render.g2d.Color4;
+import cm.milkyway.lang.Disposable;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.g2d.Color;
 
 /** May not be implemented in some backends! */
-public interface Model3D
+public interface Model3D extends Disposable
 {
 
     Model3DObject newInstance();
 
-    void bind(BufferTex texture);
+    void bind(Tex texture);
 
-    void bind(Color4 color4);
+    void bind(Color color4);
 
 }

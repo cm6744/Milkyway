@@ -1,23 +1,23 @@
 package cm.milkyway.opengl.render.g2d;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.lang.container.VarList;
+import cm.milkyway.lang.container.list.NonnullList;
 import cm.milkyway.lang.text.DataType;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 
 public class Font3
 {
 
     static final int ALL = 10;
 
-    VarList numbers = new VarList();
+    NonnullList<Integer> numbers = new NonnullList<>(0);
 
-    BufferTex fontsAll;
+    Tex fontsAll;
     AreaStatic[] eachFont = new AreaStatic[ALL];
 
     boolean zeroFilling;
     int sizeOfNumber;
 
-    public Font3(BufferTex fonts, boolean fillWithZero, int size)
+    public Font3(Tex fonts, boolean fillWithZero, int size)
     {
         fontsAll = fonts;
         zeroFilling = fillWithZero;
@@ -29,10 +29,10 @@ public class Font3
         }
     }
 
-    public void render(double x, double y, int eachWidth, int height)
+    public void render(Graphics2D g, double x, double y, int eachWidth, int height)
     {
         for(int i = 0; i < numbers.size(); i++) {
-            Milkyway.gl2d.dim(eachFont[numbers.get(i)], x, y, eachWidth, height);
+            eachFont[numbers.get(i)].render(g, x, y, eachWidth, height);
         }
     }
 

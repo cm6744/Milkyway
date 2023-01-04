@@ -1,9 +1,9 @@
 package cm.milkywayx.scriptx.cls.compile;
 
+import cm.milkyway.lang.io.Access;
 import cm.milkywayx.scriptx.cls.lib.Lib;
 import cm.milkywayx.scriptx.cls.lib.Libs;
-import cm.milkyway.Milkyway;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 
 public abstract class CLSCompiler
 {
@@ -20,9 +20,9 @@ public abstract class CLSCompiler
         libs.load(l);
     }
 
-    public CLS compileFile(String file)
+    public CLS compileFile(Access file)
     {
-        return compileText(Milkyway.accessor.read(file));
+        return compileText(file.read());
     }
 
     public CLS compileText(List<String> file)

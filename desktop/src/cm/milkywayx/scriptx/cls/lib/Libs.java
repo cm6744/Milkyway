@@ -3,7 +3,7 @@ package cm.milkywayx.scriptx.cls.lib;
 import cm.milkywayx.scriptx.cls.method.Method;
 import cm.milkywayx.scriptx.cls.value.CLSMethodArg;
 import cm.milkywayx.scriptx.cls.value.CLSValue;
-import cm.milkyway.lang.container.Map;
+import cm.milkyway.lang.container.map.Map;
 
 public class Libs
 {

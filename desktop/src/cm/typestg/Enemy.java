@@ -1,18 +1,18 @@
 package cm.typestg;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.render.g2d.Area;
-import cm.milkyway.opengl.render.g2d.BufferTex;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkywayx.widgetx.widget.Bounder;
 import cm.milkyway.lang.maths.Mth;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 import cm.typestg.act.Action;
 
 public class Enemy extends Bounder<Rect>
 {
 
-    public static BufferTex SHOOT_UP;
-    public static BufferTex HURT;
+    public static Tex SHOOT_UP;
+    public static Tex HURT;
 
     public static final String STAY = "stay";
     public static final String MOVE = "move";
@@ -41,21 +41,22 @@ public class Enemy extends Bounder<Rect>
         }
     }
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         double d = vecInfo.degree();
         Area moveTimeline = texture(MOVE);
         Area stayTimeline = texture(STAY);
 
         if(Mth.similarCompare(d, 180, 45)) {
-            Milkyway.gl2d.dim(moveTimeline, renderBox);
+            g.draw(moveTimeline, renderBox);
         }
         else if(Mth.similarCompare(d, 0, 45)) {
-            Milkyway.glBase.state().mirrored(true);
-            Milkyway.gl2d.dim(moveTimeline, renderBox);
+            g.setFlipX(true);
+            g.draw(moveTimeline, renderBox);
+            g.setFlipX(false);
         }
         else {
-            Milkyway.gl2d.dim(stayTimeline, renderBox);
+            g.draw(stayTimeline, renderBox);
         }
     }
 

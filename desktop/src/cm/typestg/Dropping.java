@@ -2,7 +2,7 @@ package cm.typestg;
 
 import cm.milkywayx.widgetx.widget.Bounder;
 import cm.milkyway.lang.maths.VecMth;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 
 public class Dropping extends Bounder<Rect>
 {

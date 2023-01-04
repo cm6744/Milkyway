@@ -1,10 +1,12 @@
 package cm.typestg.test;
 
-import cm.milkyway.Milkyway;
+import cm.backends.lwjgl.LwjglKey;
 import cm.milkyway.opengl.render.g2d.AreaStatic;
+import cm.milkyway.opengl.render.g2d.Color;
 import cm.milkyway.opengl.render.g2d.Text;
-import cm.milkywayx.widgetx.base.Scene;
-import cm.milkywayx.widgetx.base.SceneManager;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+import cm.milkywayx.widgetx.scene.Scene;
+import cm.milkywayx.widgetx.scene.SceneManager;
 import cm.milkywayx.widgetx.widget.button.Button;
 import cm.milkywayx.widgetx.widget.button.ButtonKey;
 import cm.milkywayx.widgetx.widget.button.ButtonKeyManager;
@@ -32,14 +34,15 @@ public class ScenePause extends Scene
     {
         manager = new ButtonKeyManager();
         choice = new ChoiceKey();
-        choice.toUpDownDirection();
+        choice.toUpDown();
+        choice.setKey(LwjglKey.key("up"), LwjglKey.key("down"));
         choice.box().resize(300, 300);
         choice.box().loc(scr.xc() + 120, scr.yc() + 80);
         choice.setElementsSpace(30);
         button1 = doProcess(0, 0, 200, "Resume");
         button2 = doProcess(0, 0, 200, "exit");
-        choice.append(button1, Text.create(Assets.loader.getFont("en_us"), "Back to game"));
-        choice.append(button2, Text.create(Assets.loader.getFont("en_us"), "Exit the game"));
+        choice.append(button1, Text.create(Assets.loader.getFont("en_us"), Color.C1111, "Resume"));
+        choice.append(button2, Text.create(Assets.loader.getFont("en_us"), Color.C1111, "Give up"));
         manager.add(button1);
         manager.add(button2);
         choice.vec().setSpeed(2.5);
@@ -47,7 +50,7 @@ public class ScenePause extends Scene
 
     private ButtonKey doProcess(double x, double y, double w, String n)
     {
-        ButtonKey button1 = new ButtonKey();
+        ButtonKey button1 = new ButtonKey(LwjglKey.key("z"));
         AreaStatic a1 = AreaStatic.dim01(Assets.loader.getTex("button"), 0, 0, 1, 1 / 3.0);
         button1.setTexture(a1, Button.UP);
         AreaStatic a2 = AreaStatic.dim01(Assets.loader.getTex("button"), 0, 1 / 3.0, 1, 1 / 3.0);
@@ -57,7 +60,7 @@ public class ScenePause extends Scene
 
         button1.box().loc(x, y);
         button1.box().resize(w, 20);
-        button1.append(Text.create(Assets.loader.getFont("en_us"), n));
+        button1.append(Text.create(Assets.loader.getFont("en_us"), Color.C1111, n));
         return button1;
     }
 
@@ -76,10 +79,10 @@ public class ScenePause extends Scene
         manager.set(choice.getCurrent());
     }
 
-    public void render()
+    public void render(Graphics2D g)
     {
-        choice.render();
-        Milkyway.glBase.freeAll();
+        choice.render(g);
+        g.getContext().paint();
     }
 
 }

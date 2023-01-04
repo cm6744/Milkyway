@@ -5,7 +5,7 @@ import cm.milkywayx.scriptx.cls.method.NumMethod;
 import cm.milkywayx.scriptx.cls.method.VoidMethod;
 import cm.milkywayx.scriptx.cls.value.CLSMethodArg;
 import cm.milkywayx.widgetx.base.RenderBuffer;
-import cm.milkyway.lang.container.Map;
+import cm.milkyway.lang.container.map.Map;
 import cm.milkyway.lang.maths.VecMth;
 import cm.typestg.Bullet;
 import cm.typestg.BulletMap;

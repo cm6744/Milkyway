@@ -1,7 +1,7 @@
 package cm.typestg;
 
 import cm.milkywayx.widgetx.base.Timeline;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.maths.Mth;
 import cm.milkyway.lang.maths.VecMth;
 import cm.typestg.act.Action;

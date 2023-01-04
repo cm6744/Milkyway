@@ -1,6 +1,6 @@
 package cm.milkywayx.lightx;
 
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 
 public abstract class Light
 {

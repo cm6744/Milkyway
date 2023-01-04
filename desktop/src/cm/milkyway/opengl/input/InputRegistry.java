@@ -1,6 +1,6 @@
 package cm.milkyway.opengl.input;
 
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 
 public abstract class InputRegistry
 {

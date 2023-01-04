@@ -1,8 +1,11 @@
 package cm.milkywayx.widgetx.widget.button;
 
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+import cm.milkywayx.widgetx.Renderable2D;
+import cm.milkywayx.widgetx.Tickable;
 
-public class ButtonKeyManager
+public class ButtonKeyManager implements Renderable2D, Tickable
 {
 
     List<ButtonKey> buttons = new List<>();
@@ -18,9 +21,9 @@ public class ButtonKeyManager
         current().forceHang(true);
     }
 
-    public void render()
+    public void render(Graphics2D g)
     {
-        buttons.iterate((o, i) -> o.render(), false);
+        buttons.iterate((o, i) -> o.render(g), false);
     }
 
     public void add(ButtonKey but)

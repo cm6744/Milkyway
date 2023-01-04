@@ -1,8 +1,5 @@
 package cm.milkyway.lang;
 
-import cm.milkyway.BackendMark;
-
-@BackendMark
 public class Platform
 {
 

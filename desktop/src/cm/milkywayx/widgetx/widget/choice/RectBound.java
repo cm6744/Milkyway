@@ -1,7 +1,7 @@
 package cm.milkywayx.widgetx.widget.choice;
 
 import cm.milkywayx.widgetx.widget.Bounder;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 
 public class RectBound extends Bounder<Rect>
 {

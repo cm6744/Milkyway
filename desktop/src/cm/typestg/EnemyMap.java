@@ -1,7 +1,7 @@
 package cm.typestg;
 
 import cm.milkyway.opengl.render.g2d.AreaAnimated;
-import cm.milkyway.opengl.render.g2d.BufferTex;
+import cm.milkyway.opengl.render.g2d.Tex;
 import cm.typestg.test.Assets;
 
 public class EnemyMap
@@ -9,7 +9,7 @@ public class EnemyMap
 
     public static Enemy[] enemies = new Enemy[128];
 
-    public static void register(int type, double bw, double bh, double rw, double rh, double hlt, BufferTex tex)
+    public static void register(int type, double bw, double bh, double rw, double rh, double hlt, Tex tex)
     {
         enemies[type] = new Enemy();
         enemies[type].box().resize(rw, rh);
@@ -19,7 +19,7 @@ public class EnemyMap
         enemies[type].setMaxHealth(hlt);
     }
 
-    public static void registerOwned(int type, double bw, double bh, double rw, double rh, double hlt, BufferTex tex)
+    public static void registerOwned(int type, double bw, double bh, double rw, double rh, double hlt, Tex tex)
     {
         enemies[type] = new Enemy();
         enemies[type].box().resize(rw, rh);
@@ -30,8 +30,8 @@ public class EnemyMap
     }
 
     public static void registerAll() {
-        BufferTex tex1 = Assets.loader.getTex("enemy1");
-        BufferTex tex2 = Assets.loader.getTex("enemyGlow");
+        Tex tex1 = Assets.loader.getTex("enemy1");
+        Tex tex2 = Assets.loader.getTex("enemyGlow");
 
         register(0, 64, 64, 42, 42, 100, tex1);
         registerOwned(50, 64, 64, 24, 24, 100, tex2);

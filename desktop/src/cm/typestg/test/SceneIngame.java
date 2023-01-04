@@ -1,19 +1,25 @@
 package cm.typestg.test;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.TaskCaller;
-import cm.backends.gdx.json.JsonOGdx;
+import cm.backends.lwjgl.LwjglKey;
+import cm.backends.lwjgl.LwjglSoundDevice;
+import cm.backends.tipy.DefaultTipyReader;
+import cm.milkyway.lang.io.AccessLocal;
 import cm.milkyway.opengl.input.InputMap;
 import cm.milkyway.opengl.render.g2d.*;
-import cm.milkyway.opengl.audio.AudioDevice;
+import cm.milkyway.opengl.audio.SoundDevice;
+import cm.milkyway.opengl.render.g2d.AreaAnimated;
+import cm.milkyway.opengl.render.g2d.AreaColored;
+import cm.milkyway.opengl.render.g2d.AreaStatic;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+import cm.milkyway.tipy.Tipy;
 import cm.milkywayx.widgetx.base.RenderBuffer;
 import cm.milkywayx.widgetx.widget.ProgressLine;
 import cm.milkywayx.widgetx.widget.choice.RectBound;
 import cm.milkywayx.particlex.Particle;
 import cm.milkyway.lang.container.Iterator;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.maths.Mth;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 import cm.milkyway.lang.text.Data;
 import cm.typestg.*;
 import cm.typestg.act.Action;
@@ -43,8 +49,6 @@ public class SceneIngame extends SceneSTG
     public void init()
     {
         super.init();
-        BufferTex shader = Milkyway.graphics.newTex();
-        Milkyway.gl2d.loadTexture(shader, "textures/misc/shade.png");
         roller.overlay(Assets.loader.getTex("stg8bgovl"));
         roller.rolling(Assets.loader.getTex("stg8bg"), 2);
 
@@ -72,8 +76,8 @@ public class SceneIngame extends SceneSTG
 
         bossBar.box().loc(scr.x(), scr.yc() + 10);
         bossBar.box().resize(scr.w() - 25, 5);
-        bossBar.setTexture(AreaColored.create(Color4.C0000), ProgressLine.EMPTY);
-        bossBar.setTexture(AreaColored.create(Color4.C1111), ProgressLine.FULL);
+        bossBar.setTexture(AreaColored.create(Color.C0000), ProgressLine.EMPTY);
+        bossBar.setTexture(AreaColored.create(Color.C1111), ProgressLine.FULL);
 
         point.box().resize(12, 12);
         point.setTexture(AreaStatic.create(Assets.loader.getTex("boundPoint")));
@@ -96,16 +100,16 @@ public class SceneIngame extends SceneSTG
         Share.shooter = shoot;
         Share.player = player;
         Share.enemyCreator = addEne;
-        JsonOGdx keys = JsonOGdx.load("keys.json");
+        Tipy keys = new DefaultTipyReader().read(new AccessLocal("keys.json"));
         player.keyBind(
-                Milkyway.keys.key(keys.entry("right").asString()),
-                Milkyway.keys.key(keys.entry("left").asString()),
-                Milkyway.keys.key(keys.entry("up").asString()),
-                Milkyway.keys.key(keys.entry("down").asString()),
-                Milkyway.keys.key(keys.entry("mode").asString())
+                LwjglKey.key(keys.getValue("right").getString()),
+                LwjglKey.key(keys.getValue("left").getString()),
+                LwjglKey.key(keys.getValue("up").getString()),
+                LwjglKey.key(keys.getValue("down").getString()),
+                LwjglKey.key(keys.getValue("mode").getString())
         );
 
-        AudioDevice device = Milkyway.audio.newDevice();
+        SoundDevice device = new LwjglSoundDevice();
         device.start();
         device.loop(Assets.loader.getSound("stg6"));
     }
@@ -137,13 +141,13 @@ public class SceneIngame extends SceneSTG
             bossBar.value(b1.health() / b1.maxHealth());
         }
 
-        if(InputMap.isOn(Milkyway.keys.key("ctrl"))) {
-            TaskCaller.setDefaultFps(240, 60);
+        if(InputMap.isOn(LwjglKey.key("ctrl"))) {
+            //Eventbus.setDefaultFps(240, 60);
         }
         else {
-            TaskCaller.setDefaultFps(Main.defFps, 60);
+            //Eventbus.setDefaultFps(Main.defFps, 60);
         }
-        if(InputMap.isClick(Milkyway.keys.key("esc"))) {
+        if(InputMap.isClick(LwjglKey.key("esc"))) {
             pause = !pause;
         }
         if(pause) {
@@ -173,8 +177,8 @@ public class SceneIngame extends SceneSTG
         particles.iterate(ptick, true);
 
         player.tick();
-        if(InputMap.isOn(Milkyway.keys.key("z"))) {
-            if(InputMap.isOn(Milkyway.keys.key("shift"))) {
+        if(InputMap.isOn(LwjglKey.key("z"))) {
+            if(InputMap.isOn(LwjglKey.key("shift"))) {
                 Bullet c1 = BulletMap.type_color_mat[101][7];
                 if(time() % 2 == 0) {
                     shoot.add(c1, null, null, player.box().x(), player.box().yc() - 10, 15, -90 + Mth.random(-1, 1), Bullet.PLAYER, false);
@@ -196,7 +200,7 @@ public class SceneIngame extends SceneSTG
                 }
             }
         }
-        if(bTime <= 0 && InputMap.isClick(Milkyway.keys.key("x"))) {
+        if(bTime <= 0 && InputMap.isClick(LwjglKey.key("x"))) {
             bTime = 400;
             player.bomb(bTime);
             bomb();
@@ -219,66 +223,64 @@ public class SceneIngame extends SceneSTG
     int bTime;
     public int quake;
 
-    Iterator<Enemy> eir = (o, i) -> o.render();
-    Iterator<Bullet> bir = (o, i) -> o.render();
-    Iterator<Particle> pir = (o, i) -> o.render();
-    Iterator<Dropping> dir = (o, i) -> o.render();
+    Graphics2D g;
+    Iterator<Enemy> eir = (o, i) -> o.render(g);
+    Iterator<Bullet> bir = (o, i) -> o.render(g);
+    Iterator<Particle> pir = (o, i) -> o.render(g);
+    Iterator<Dropping> dir = (o, i) -> o.render(g);
 
-    public void render()
+    public void render(Graphics2D g)
     {
+        g.getContext().clear();
+        this.g = g;
         if(bTime > 0 || quake > 0) {
             double stn = Mth.min(bTime > 0 ? bTime : quake * 0.1, 16);
-            Milkyway.glBase.translation(Mth.random(-stn, stn), Mth.random(-stn, stn));
+            //Milkyway.glBase.translation(Mth.random(-stn, stn), Mth.random(-stn, stn));
         }
 
-        Milkyway.gl2d.dim(Assets.loader.getTex("stg6bg"), 170 - 40, 20, 460 + 80, 560);
+        g.draw(Assets.loader.getTex("stg6bg"), 170 - 40, 20, 460 + 80, 560);
         for(int i = b2d.last(); i >= 0; i--) {
             RenderBuffer r = b2d.get(i);
             if(r != null) {
-                r.render();
+                r.render(g);
             }
         }
 
         Main.performed.render();
 
         if(enemies.contains(b1)) {
-            roller.render();
+            roller.render(g);
         }
 
         enemies.iterate(eir, true);
         playerBullets.iterate(bir, true);
-        player.render();
+        player.render(g);
         droppings.iterate(dir, true);
         bullets.iterate(bir, true);
-        player.renderPoint();
+        player.renderPoint(g);
 
         particles.iterate(pir, true);
 
-        if(quake > 0 || bTime > 0) {
-            Milkyway.glBase.freeAll();
-            Milkyway.glBase.translation(0, 0);
-        }
-
         if(enemies.contains(b1)) {
-            bossBar.render();
+            bossBar.render(g);
         }
 
-        Milkyway.gl2d.dim(Assets.loader.getTex("overlay"), 0, 0, 640, 480);
+        g.draw(Assets.loader.getTex("overlay"), 0, 0, 640, 480);
 
         //player.render();
-        Milkyway.glBase.state().font(Assets.loader.getFont("en_us"));
-        Milkyway.glBase.state().color(Color4.C1111);
-        Milkyway.glText.text("Bullet Count: " + Data.toString(bullets.size()), 20, 460, false);
-        Milkyway.glText.text("RD: " + Data.toString(TaskCaller.renderSync().fps()), 200, 460, false);
-        Milkyway.glText.text("TK: " + Data.toString(TaskCaller.tickSync().fps()), 300, 460, false);
-        Milkyway.glText.text("Score: " + Data.toString(score), 540, 20, false);
+        Font f = Assets.loader.getFont("en_us");
+        Color c = Color.C1111;
+        g.drawText(f, c, "Bullet Count: " + Data.toString(bullets.size()), 20, 460, false);
+        g.drawText(f, c, "RD: " + Data.toString(60), 200, 460, false);
+        g.drawText(f, c, "TK: " + Data.toString(60), 300, 460, false);
+        g.drawText(f, c, "Score: " + Data.toString(score), 540, 20, false);
 
         //Debug.renderDebug(Assets.loader.getFont("en_us"));
 
-        Milkyway.glBase.freeAll();
+        g.getContext().paint();
 
         if(pause) {
-            scenePause.render();
+            scenePause.render(g);
         }
     }
 

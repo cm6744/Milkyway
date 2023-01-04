@@ -1,9 +1,9 @@
 package cm.typestg;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.opengl.render.g2d.BufferTex;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkywayx.widgetx.widget.Bounder;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 import cm.typestg.act.Action;
 
 public class Bullet extends Bounder<Rect>
@@ -13,7 +13,7 @@ public class Bullet extends Bounder<Rect>
     public static int TYPE_MAX = 1024;
     public static int UV_SIZE_TILE = 16;
     public static double FOGGY_TIME = 14;
-    public static BufferTex FOG;
+    public static Tex FOG;
 
     Action<Bullet> action;
     int color, type;
@@ -73,12 +73,13 @@ public class Bullet extends Bounder<Rect>
         }
     }
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         if(time() <= FOGGY_TIME) {
-            Milkyway.glBase.state().opacity(time() / FOGGY_TIME);
+            g.setOpacity(time() / FOGGY_TIME);
         }
-        Milkyway.gl2d.dim(texture(), renderBox);
+        g.draw(texture(), renderBox);
+        g.setOpacity(1);
     }
 
     public void dye(int col)

@@ -1,40 +1,34 @@
 package cm.typestg.test;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.opengl.render.GLBase;
-import cm.milkyway.opengl.render.g2d.Color4;
+import cm.backends.lwjgl.LwjglGraphics3D;
+import cm.milkyway.opengl.render.g2d.Color;
 import cm.milkyway.opengl.render.g3d.Camera;
 import cm.milkyway.opengl.render.g3d.Model3D;
+import cm.milkyway.opengl.render.graphics.Graphics3D;
 import cm.milkywayx.widgetx.base.ModelBuffer;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.maths.Mth;
 
 public class GL3Performed
 {
 
-    public GLBase gl;
-
+    Graphics3D g = new LwjglGraphics3D();
     public List<ModelBuffer> inss = new List<>();
     public double sped = -0.5;
     public boolean newBoj = true;
     Model3D md;
     Model3D roof;
 
-    public GL3Performed(GLBase g)
-    {
-        gl = g;
-    }
-
     public void init()
     {
-        Camera camera = Milkyway.gl3d.camera();
+        Camera camera = g.getCamera();
         camera.pos(0, 0, 10);
         camera.lookPos(7, 0, 10);
         camera.sight(1, 2900, 2900);
-        md = Milkyway.gl3d.genModel(700, 420, 5);
+        md = g.genModel(700, 420, 5);
         md.bind(Assets.loader.getTex("window"));
-        roof = Milkyway.gl3d.genModel(700, 2, 420);
-        roof.bind(Color4.C0001);
+        roof = g.genModel(700, 2, 420);
+        roof.bind(Color.C0001);
         addPair(0);
         addPair(700);
         addPair(1400);
@@ -71,7 +65,7 @@ public class GL3Performed
         float lastX = 0;
         for(int i = inss.last(); i >= 0; i--) {
             ModelBuffer in = inss.get(i);
-            in.pos().trs(sped, 0, 0);
+            in.pos().add(sped, 0, 0);
             if(in.pos().x() <= -700) {
                 add = true;
                 inss.remove(i);
@@ -89,7 +83,7 @@ public class GL3Performed
     {
         //long time = Platform.getTickMill();
         for(int i = 0; i < inss.size(); i++) {
-            inss.get(i).render();
+            inss.get(i).render(g);
         }
         //System.out.println(Platform.getTickMill() - time);
     }

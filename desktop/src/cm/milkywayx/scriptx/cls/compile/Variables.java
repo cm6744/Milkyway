@@ -1,8 +1,8 @@
 package cm.milkywayx.scriptx.cls.compile;
 
 import cm.milkywayx.scriptx.cls.value.CLSValue;
-import cm.milkyway.lang.container.List;
-import cm.milkyway.lang.container.Map;
+import cm.milkyway.lang.container.list.List;
+import cm.milkyway.lang.container.map.Map;
 
 public class Variables
 {

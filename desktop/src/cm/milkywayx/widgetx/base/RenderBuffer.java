@@ -1,11 +1,12 @@
 package cm.milkywayx.widgetx.base;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.render.g2d.Area;
-import cm.milkyway.lang.container.Map;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.container.map.Map;
+import cm.milkyway.lang.maths.shapes.Rect;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+import cm.milkywayx.widgetx.Renderable2D;
 
-public class RenderBuffer extends Timeline
+public class RenderBuffer extends Timeline implements Renderable2D
 {
 
     //null values default!
@@ -26,27 +27,26 @@ public class RenderBuffer extends Timeline
         renderBox.loc(vecInfo.applyX(renderBox.x()), vecInfo.applyY(renderBox.y()));
     }
 
-    public void render()
+    public void render(Graphics2D g)
     {
-        Milkyway.glBase.state().clear();
-
-        Milkyway.glBase.state().rotate(effect.rotation());
-        Milkyway.glBase.state().opacity(effect.opacity());
+        g.setRotation(effect.rotation());
+        g.setOpacity(effect.opacity());
 
         double x = renderBox.xc();
         double y = renderBox.yc();
         double w = renderBox.w();
         double h = renderBox.h();
 
-        renderThen(x, y, w, h);
+        renderThen(g, x, y, w, h);
 
-        Milkyway.glBase.state().clear();
+        g.setRotation(0);
+        g.setOpacity(1);
     }
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         if(texture() != null) {
-            Milkyway.gl2d.dim(texture(), x, y, w, h);
+            texture().render(g, x, y, w, h);
         }
     }
 

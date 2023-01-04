@@ -13,7 +13,7 @@ public class Inventory
         size = siz;
         stacks = new Stack[siz];
         for(int i = 0; i < stacks.length; i++) {
-            stacks[i] = Stack.EMPTY.copy();
+            stacks[i] = Stack.createEmpty();
         }
     }
 
@@ -24,7 +24,15 @@ public class Inventory
 
     public Stack add(Stack s)
     {
-        for(int i = 0; i < stacks.length; i++) {
+        return add(s, 0, size);
+    }
+
+    public Stack add(Stack s, int startSlot, int endSlot)
+    {
+        for(int i = startSlot; i < endSlot; i++) {
+            if(!canPut(s, i)) {
+                continue;
+            }
             s = get(i).merge(s);
             if(s.isEmpty()) {
                 break;
@@ -33,11 +41,19 @@ public class Inventory
         return s;
     }
 
+    public boolean canPut(Stack s, int slot)
+    {
+        if(s.isEmpty()) {
+            return true;
+        }
+        return s.item().canPutIn(this, s, slot);
+    }
+
     public Stack get(int i)
     {
         Stack s = stacks[i];
         if(s == null) {
-            return Stack.EMPTY;
+            return Stack.createEmpty();
         }
         return s;
     }
@@ -51,7 +67,7 @@ public class Inventory
     {
         for(int i = 0; i < stacks.length; i++) {
             Stack s = get(i);
-            Platform.log((s.count() + " " + s.item().mame()));
+            Platform.log((s.count() + " " + s.item().name()));
         }
     }
 

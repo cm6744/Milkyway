@@ -1,62 +1,41 @@
 package cm.milkyway.opengl.loader;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.opengl.render.g2d.BufferTex;
-import cm.milkyway.opengl.render.g2d.Color4;
-import cm.milkyway.opengl.render.g2d.Font2;
+import cm.milkyway.lang.container.list.List;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.g2d.Color;
+import cm.milkyway.opengl.render.g2d.Font;
 import cm.milkyway.opengl.render.g2d.FontType;
 import cm.milkyway.opengl.audio.Sound;
 import cm.milkyway.lang.Task;
-import cm.milkyway.lang.container.Map;
-import cm.milkyway.lang.container.Queue;
+import cm.milkyway.lang.container.map.Map;
 
-public class Loader
+public abstract class Loader
 {
 
     double progress;
     double total;
     double run;
     boolean done;
-    Map<String, BufferTex> texMap = new Map<>();
-    Map<String, FontType> fontTypeMap = new Map<>();
-    Map<String, Font2> fontMap = new Map<>();
-    Map<String, Sound> soundMap = new Map<>();
-    Queue<Task> tasks = new Queue<>();
+    protected Map<String, Tex> texMap = new Map<>();
+    protected Map<String, FontType> fontTypeMap = new Map<>();
+    protected Map<String, Font> fontMap = new Map<>();
+    protected Map<String, Sound> soundMap = new Map<>();
+    protected List<Task> tasks = new List<>();
 
-    public void loadTex(String name, String path)
+    protected void offer(Task task)
     {
-        tasks.offer(() -> {
-            BufferTex buf = Milkyway.graphics.newTex();
-            Milkyway.gl2d.loadTexture(buf, path);
-            texMap.put(name, buf);
-        });
+        tasks.add(task);
     }
 
-    public void loadFontType(String name, String path, String desc)
-    {
-        tasks.offer(() -> {
-            FontType fontType = Milkyway.graphics.newType(path, desc);
-            fontTypeMap.put(name, fontType);
-        });
-    }
+    public abstract void loadTex(String name, String path);
 
-    public void loadFont(String name, String typeName, Color4 color, double size)
-    {
-        tasks.offer(() -> {
-            FontType fontType = getFontType(typeName);
-            fontMap.put(name, fontType.generate(color, size));
-        });
-    }
+    public abstract void loadFontType(String name, String path, String desc);
 
-    public void loadSound(String name, String path)
-    {
-        tasks.offer(() -> {
-            Sound sound = Milkyway.audio.newSound(path);
-            soundMap.put(name, sound);
-        });
-    }
+    public abstract void loadFont(String name, String typeName, Color color, double size);
 
-    public BufferTex getTex(String name)
+    public abstract void loadSound(String name, String path);
+
+    public Tex getTex(String name)
     {
         return texMap.get(name);
     }
@@ -66,7 +45,7 @@ public class Loader
         return fontTypeMap.get(name);
     }
 
-    public Font2 getFont(String name)
+    public Font getFont(String name)
     {
         return fontMap.get(name);
     }

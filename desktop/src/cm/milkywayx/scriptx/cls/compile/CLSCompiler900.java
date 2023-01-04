@@ -1,11 +1,12 @@
 package cm.milkywayx.scriptx.cls.compile;
 
+import cm.milkyway.lang.io.AccessLocal;
 import cm.milkywayx.scriptx.cls.method.Method;
 import cm.milkywayx.scriptx.cls.statement.IfManage;
 import cm.milkywayx.scriptx.cls.statement.IfState;
 import cm.milkywayx.scriptx.cls.statement.WhileState;
 import cm.milkywayx.scriptx.cls.value.*;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.text.Data;
 import cm.milkyway.lang.text.DataType;
 
@@ -17,7 +18,7 @@ import cm.milkyway.lang.text.DataType;
 public class CLSCompiler900 extends CLSCompiler
 {
 
-    //just a cache, storage the now line's running conditions.
+    //just a createSaveData, storage the now line's running conditions.
     List<IfState> nowIfCaches = new List<>();
     List<WhileState> nowWhiles = new List<>();
 
@@ -67,7 +68,7 @@ public class CLSCompiler900 extends CLSCompiler
         else if(Data.startIgnSpace(s, "compile")) {
             //a builtin method, put compiled CLS in a map.
             CLSMethodArg params = getParams(state, s, ',');
-            state.links.put(params.vString(0), compileFile(params.vString(1)));
+            state.links.put(params.vString(0), compileFile(new AccessLocal(params.vString(1))));
         }
         else if(Data.startIgnSpace(s, "run")) {
             //another builtin method, run a compiled CLS in map.

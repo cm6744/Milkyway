@@ -1,5 +1,7 @@
 package cm.milkyway.opengl.audio;
 
-public interface Sound
+import cm.milkyway.lang.Disposable;
+
+public interface Sound extends Disposable
 {
 }

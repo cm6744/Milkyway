@@ -1,9 +1,11 @@
 package cm.typestg.test;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.opengl.render.g2d.BufferTex;
-import cm.milkywayx.widgetx.base.Scene;
-import cm.milkywayx.widgetx.base.SceneManager;
+import cm.backends.lwjgl.LwjglTexture;
+import cm.milkyway.lang.io.AccessLocal;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+import cm.milkywayx.widgetx.scene.Scene;
+import cm.milkywayx.widgetx.scene.SceneManager;
 import cm.typestg.Bullet;
 import cm.typestg.BulletMap;
 import cm.typestg.Enemy;
@@ -12,12 +14,12 @@ import cm.typestg.EnemyMap;
 public class SceneLoad extends Scene
 {
 
-    BufferTex tex = Milkyway.graphics.newTex();
+    Tex tex = new LwjglTexture();
 
     public void init()
     {
         Assets.loadAll();
-        Milkyway.gl2d.loadTexture(tex, "textures/logo.png");
+        tex.load(new AccessLocal("textures/logo.png"));
     }
 
     public void tickThen()
@@ -40,10 +42,11 @@ public class SceneLoad extends Scene
         }
     }
 
-    public void render()
+    public void render(Graphics2D g)
     {
-        Milkyway.gl2d.dim(tex, 0, 0, 640, 480);
-        Milkyway.glBase.freeAll();
+        g.getContext().clear();
+        g.draw(tex, 0, 0, 640, 480);
+        g.getContext().paint();
     }
 
 }

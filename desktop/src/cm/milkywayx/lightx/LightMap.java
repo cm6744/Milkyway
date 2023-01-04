@@ -1,21 +1,19 @@
 package cm.milkywayx.lightx;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.maths.Mth;
-import cm.milkyway.opengl.render.g2d.BufferTex;
-import cm.milkyway.physics.d4simple.World;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 
 public class LightMap
 {
 
     List<Light> lights = new List<>();
-    BufferTex tex;
+    Tex tex;
     double blockSize;
     double renderSize;
-    World world;
 
-    public LightMap(BufferTex shade, double block, double render)
+    public LightMap(Tex shade, double block, double render)
     {
         tex = shade;
         blockSize = block;
@@ -27,31 +25,42 @@ public class LightMap
         lights.add(spot);
     }
 
-    public void render()
+    public void remove(Light spot)
     {
-        double w = Milkyway.glBase.width();
-        double h = Milkyway.glBase.height();
+        lights.remove(spot);
+    }
 
+    public void clear()
+    {
+        lights.clear();
+    }
+    
+    public void render(Graphics2D g)
+    {
+        double w = g.getContext().width();
+        double h = g.getContext().height();
+        
         for(double i = -blockSize; i < w + blockSize; i += blockSize) {
             for(double j = -blockSize; j < h + blockSize; j += blockSize) {
                 double cx = i + blockSize / 2;
                 double cy = j + blockSize / 2;
-                double intensity = 1;
+                double intensity = 0;
                 for(int k = lights.last(); k >= 0; k--) {
                     Light light = lights.get(k);
-                    intensity *= 1 - light.luminous(cx, cy);
+                    double lm = light.luminous(cx, cy);
+                    intensity += Mth.max(Mth.min(lm, 1), 0);
                     if(light.isRemoved()) {
                         lights.remove(k);
                     }
                 }
                 intensity = Mth.min(1, intensity);
                 intensity = Mth.max(0, intensity);
-                Milkyway.glBase.state().opacity(intensity);
-                Milkyway.gl2d.dim(tex, i - renderSize / 2, j - renderSize / 2, renderSize, renderSize);
+                g.setOpacity(1 - intensity);
+                g.draw(tex, i - renderSize / 2, j - renderSize / 2, renderSize, renderSize);
             }
         }
 
-        Milkyway.glBase.state().clear();
+        g.setOpacity(1);
     }
 
 }

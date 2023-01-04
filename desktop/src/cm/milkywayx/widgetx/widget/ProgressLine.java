@@ -1,6 +1,6 @@
 package cm.milkywayx.widgetx.widget;
 
-import cm.milkyway.Milkyway;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkywayx.widgetx.base.RenderBuffer;
 
 public class ProgressLine extends RenderBuffer
@@ -21,10 +21,10 @@ public class ProgressLine extends RenderBuffer
         pro += v;
     }
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
-        Milkyway.gl2d.dim(texture(EMPTY), renderBox);
-        Milkyway.gl2d.dim(texture(FULL), renderBox.xc(), renderBox.yc(), renderBox.w() * pro, renderBox.h());
+        g.draw(texture(EMPTY), renderBox);
+        g.draw(texture(FULL), renderBox.xc(), renderBox.yc(), renderBox.w() * pro, renderBox.h());
     }
 
 }

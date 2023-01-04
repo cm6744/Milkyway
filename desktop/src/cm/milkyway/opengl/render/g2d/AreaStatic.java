@@ -1,7 +1,7 @@
 package cm.milkyway.opengl.render.g2d;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.physics.shapes.Flat;
+import cm.milkyway.lang.maths.shapes.Flat;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 
 /**
  * All changing method are private
@@ -10,27 +10,27 @@ import cm.milkyway.physics.shapes.Flat;
 public class AreaStatic implements Area
 {
 
-    public static AreaStatic vertex(BufferTex tex, double u1, double v1, double u2, double v2)
+    public static AreaStatic vertex(Tex tex, double u1, double v1, double u2, double v2)
     {
         return create(tex).vertex(u1, v1, u2, v2);
     }
 
-    public static AreaStatic vertex01(BufferTex tex, double u1, double v1, double u2, double v2)
+    public static AreaStatic vertex01(Tex tex, double u1, double v1, double u2, double v2)
     {
         return create(tex).vertex01(u1, v1, u2, v2);
     }
 
-    public static AreaStatic dim(BufferTex tex, double u1, double v1, double uw, double vh)
+    public static AreaStatic dim(Tex tex, double u1, double v1, double uw, double vh)
     {
         return create(tex).dim(u1, v1, uw, vh);
     }
 
-    public static AreaStatic dim01(BufferTex tex, double u1, double v1, double uw, double vh)
+    public static AreaStatic dim01(Tex tex, double u1, double v1, double uw, double vh)
     {
         return create(tex).dim01(u1, v1, uw, vh);
     }
 
-    public static AreaStatic create(BufferTex tex)
+    public static AreaStatic create(Tex tex)
     {
         return create().pushTexture(tex).full();
     }
@@ -43,16 +43,16 @@ public class AreaStatic implements Area
     //do not change its value
     //mustn't immediately link object when copying!!!
     Flat uv = Flat.normal();
-    BufferTex buffer = Milkyway.graphics.newTex();
+    Tex buffer;
     //these too
 
-    protected AreaStatic pushTexture(BufferTex buf)
+    protected AreaStatic pushTexture(Tex buf)
     {
         buffer = buf;
         return this;
     }
 
-    public BufferTex texture()
+    public Tex texture()
     {
         return buffer;
     }
@@ -68,7 +68,7 @@ public class AreaStatic implements Area
 
     protected AreaStatic vertex01(double u1, double v1, double u2, double v2)
     {
-        return vertex(u1 * fw(), v1 * fh(), u2 * fw(), v2 * fh());
+        return vertex(u1 * buffer.w(), v1 * buffer.h(), u2 * buffer.w(), v2 * buffer.h());
     }
 
     protected AreaStatic dim01(double u1, double v1, double uw, double vh)
@@ -87,26 +87,6 @@ public class AreaStatic implements Area
         return this;
     }
 
-    public double fw()
-    {
-        return Milkyway.gl2d.texw(buffer);
-    }
-
-    public double fh()
-    {
-        return Milkyway.gl2d.texh(buffer);
-    }
-
-    public double w()
-    {
-        return uv.width();
-    }
-
-    public double h()
-    {
-        return uv.height();
-    }
-
     public AreaStatic copy()
     {
         AreaStatic area = create(buffer);
@@ -116,9 +96,9 @@ public class AreaStatic implements Area
 
     //You can extend AreaStatic, override this method, to make your own render effect
     //Such as AreaAnimated
-    public void render(double x1, double y1, double w, double h)
+    public void render(Graphics2D g, double x, double y, double w, double h)
     {
-        Milkyway.gl2d.dim(buffer, x1, y1, w, h, uv.x, uv.y, uv.w, uv.h);
+        g.draw(buffer, x, y, w, h, uv.x, uv.y, uv.w, uv.h);
     }
 
 }

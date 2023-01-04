@@ -25,7 +25,7 @@ public class Mth
     //Native java Random impl.
     public static int randomInt(int min, int max)
     {
-        return jRandom.nextInt(max) - min;
+        return jRandom.nextInt(max + 1) - min;
     }
 
     public static double max(double value1, double value2)

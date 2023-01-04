@@ -1,11 +1,12 @@
 package cm.typestg.test;
 
-import cm.milkyway.Milkyway;
-import cm.milkyway.opengl.audio.ClipPlayer;
+import cm.backends.lwjgl.LwjglSoundClip;
+import cm.milkyway.lang.io.AccessLocal;
 import cm.milkyway.opengl.audio.Sound;
+import cm.milkyway.opengl.audio.SoundDevice;
 import cm.milkywayx.widgetx.base.RenderBuffer;
-import cm.milkyway.lang.container.List;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.container.list.List;
+import cm.milkyway.lang.maths.shapes.Rect;
 import cm.typestg.*;
 
 import static cm.typestg.Scr.scr;
@@ -15,7 +16,8 @@ import static cm.typestg.Share.*;
 public class Interact
 {
 
-    static Sound die = Milkyway.audio.newSound("sounds/effect/player_die.wav");
+    static SoundDevice playSound = Sounds.clip;
+    static Sound die = new LwjglSoundClip(new AccessLocal("sounds/effect/player_die.wav"));
 
     public static void run(Dropping clear)
     {
@@ -33,7 +35,7 @@ public class Interact
             if(player.hasBound() && ene.bound().interacts(player.bound())) {
                 player.beShot();
                 shooter.clear(10000, 0, 0, clear);
-                ClipPlayer.play(die);
+                playSound.play(die);
             }
             blr(clear, ene, e == 0);
         }
@@ -56,7 +58,7 @@ public class Interact
                             if(bl.canBound() && bl.bound().interacts(player.bound())) {
                                 player.beShot();
                                 //shooter.clear(10000, 0, 0, clear);
-                                ClipPlayer.play(die);
+                                playSound.play(die);
                             }
                         }
                     }

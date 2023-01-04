@@ -1,6 +1,6 @@
 package cm.typestg;
 
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
 
 public class Scr
 {

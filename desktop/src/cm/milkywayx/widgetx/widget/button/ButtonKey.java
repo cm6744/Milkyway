@@ -1,16 +1,16 @@
 package cm.milkywayx.widgetx.widget.button;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.input.InputMap;
+import cm.milkyway.opengl.input.Key;
 
 public class ButtonKey extends Button
 {
 
     boolean force;
 
-    public ButtonKey()
+    public ButtonKey(Key k)
     {
-        key = Milkyway.keys.key("z");
+        key = k;
     }
 
     public void forceHang(boolean fh)

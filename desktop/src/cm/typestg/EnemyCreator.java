@@ -2,7 +2,7 @@ package cm.typestg;
 
 import cm.milkyway.opengl.render.g2d.AreaStatic;
 import cm.milkywayx.particlex.Particle;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.milkyway.lang.maths.Mth;
 import cm.milkyway.lang.maths.VecMth;
 import cm.typestg.act.Action;

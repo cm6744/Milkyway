@@ -1,7 +1,7 @@
 package cm.milkywayx.scriptx.cls.value;
 
 import cm.milkywayx.scriptx.cls.compile.CLSState;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 
 public class CLSMethodArg
 {

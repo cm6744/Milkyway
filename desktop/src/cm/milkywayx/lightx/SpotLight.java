@@ -9,7 +9,7 @@ public class SpotLight extends Light
     public double luminous(double x, double y)
     {
         double dist = VecMth.distanceBetweenAB(pos.x(), pos.y(), x, y);
-        return (intensity / Mth.max(dist, intensity));
+        return (intensity - dist) / dist;
     }
 
 }

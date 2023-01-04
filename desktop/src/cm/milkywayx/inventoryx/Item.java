@@ -17,9 +17,14 @@ public class Item
         return maxStack;
     }
 
-    public String mame()
+    public String name()
     {
         return name;
+    }
+
+    public boolean canPutIn(Inventory inv, Stack stack, int slot)
+    {
+        return true;
     }
 
     public Stack aStack(int c)

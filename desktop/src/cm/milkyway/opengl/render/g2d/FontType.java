@@ -8,6 +8,6 @@ import cm.milkyway.lang.Disposable;
 public interface FontType extends Disposable
 {
 
-    Font2 generate(Color4 col, double size);
+    Font generate(double size);
 
 }

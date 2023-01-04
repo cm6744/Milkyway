@@ -1,11 +1,13 @@
 package cm.milkywayx.widgetx.base;
 
-public abstract class Timeline
+import cm.milkywayx.widgetx.Tickable;
+
+public abstract class Timeline implements Tickable
 {
 
     private int time;
 
-    public final void tick()
+    public void tick()
     {
         tickThen();
         promote();

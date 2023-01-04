@@ -1,7 +1,7 @@
 package cm.milkywayx.widgetx.widget;
 
 import cm.milkywayx.widgetx.base.RenderBuffer;
-import cm.milkyway.physics.shapes.Shape;
+import cm.milkyway.lang.maths.shapes.Shape;
 
 public abstract class Bounder<TYPE extends Shape> extends RenderBuffer
 {

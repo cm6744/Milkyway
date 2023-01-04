@@ -1,7 +1,7 @@
 package cm.milkyway.lang.maths;
 
-import cm.milkyway.physics.shapes.Rect;
-import cm.milkyway.physics.shapes.Vec2;
+import cm.milkyway.lang.maths.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Vec2;
 
 public class VecMth
 {

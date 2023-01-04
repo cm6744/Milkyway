@@ -1,5 +1,7 @@
 package cm.milkyway.opengl.render.g2d;
 
+import cm.milkyway.opengl.render.graphics.Graphics2D;
+
 //A row line render image cutter
 public class AreaAnimated implements Area
 {
@@ -13,7 +15,7 @@ public class AreaAnimated implements Area
     int index;
     //these too
 
-    public AreaAnimated(BufferTex tex, int rows, int lines, int lineIndex)
+    public AreaAnimated(Tex tex, int rows, int lines, int lineIndex)
     {
         maxIndex = rows;
         texture = new AreaStatic[maxIndex];
@@ -35,7 +37,7 @@ public class AreaAnimated implements Area
         return this;
     }
 
-    public void render(double x1, double y1, double w, double h)
+    public void render(Graphics2D g, double x, double y, double w, double h)
     {
         //to next frame.
         timer++;
@@ -46,37 +48,23 @@ public class AreaAnimated implements Area
             }
         }
 
-        texture[index].render(x1, y1, w, h);
+        texture[index].render(g, x, y, w, h);
+    }
+
+    public void reset()
+    {
+        index = 0;
+        timer = 0;
     }
 
     public int getTimeACycle()
     {
-        return timeRoom * maxIndex;
+        return timeRoom * (maxIndex - 1);
     }
 
-    public BufferTex texture()
+    public Tex texture()
     {
         return texture[0].texture();
-    }
-
-    public double fw()
-    {
-        return texture[0].fw();
-    }
-
-    public double fh()
-    {
-        return texture[0].fh();
-    }
-
-    public double w()
-    {
-        return texture[0].w();
-    }
-
-    public double h()
-    {
-        return texture[0].h();
     }
 
     public AreaAnimated copy()

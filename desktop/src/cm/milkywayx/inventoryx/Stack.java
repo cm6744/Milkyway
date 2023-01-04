@@ -6,7 +6,10 @@ public class Stack
     Item item;
     int count;
 
-    public static final Stack EMPTY = new Stack(null);
+    public static Stack createEmpty()
+    {
+        return new Stack(null);
+    }
 
     public Stack(Item i)
     {
@@ -60,7 +63,7 @@ public class Stack
         if(isEmpty()) {
             item = s.item();
             set(s.count());
-            return EMPTY;
+            return createEmpty();
         }
         if(s.item() != item) {
             return s;

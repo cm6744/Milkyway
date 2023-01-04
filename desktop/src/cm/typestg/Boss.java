@@ -1,9 +1,9 @@
 package cm.typestg;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.render.g2d.Area;
 import cm.milkyway.lang.maths.Mth;
-import cm.milkyway.physics.shapes.Rect;
+import cm.milkyway.lang.maths.shapes.Rect;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 
 public class Boss extends Enemy
 {
@@ -27,7 +27,7 @@ public class Boss extends Enemy
 
     Rect renderBoxFloat = new Rect();
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         renderBoxFloat.copy(renderBox);
         renderBoxFloat.mvLoc(0, Mth.sin(time() * 0.1));
@@ -37,14 +37,15 @@ public class Boss extends Enemy
         Area stayTimeline = texture(STAY);
 
         if(Mth.similarCompare(d, 180, 45)) {
-            Milkyway.gl2d.dim(moveTimeline, renderBoxFloat);
+            g.draw(moveTimeline, renderBoxFloat);
         }
         else if(Mth.similarCompare(d, 0, 45)) {
-            Milkyway.glBase.state().mirrored(true);
-            Milkyway.gl2d.dim(moveTimeline, renderBoxFloat);
+            g.setFlipX(true);
+            g.draw(moveTimeline, renderBoxFloat);
+            g.setFlipX(false);
         }
         else {
-            Milkyway.gl2d.dim(stayTimeline, renderBoxFloat);
+            g.draw(stayTimeline, renderBoxFloat);
         }
     }
 

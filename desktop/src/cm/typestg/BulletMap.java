@@ -2,34 +2,34 @@ package cm.typestg;
 
 import cm.milkyway.opengl.render.g2d.Area;
 import cm.milkyway.opengl.render.g2d.AreaStatic;
-import cm.milkyway.opengl.render.g2d.BufferTex;
+import cm.milkyway.opengl.render.g2d.Tex;
 import cm.milkyway.opengl.audio.Sound;
 import cm.milkyway.lang.Provider;
-import cm.milkyway.lang.container.List;
+import cm.milkyway.lang.container.list.List;
 import cm.typestg.test.Assets;
 
 public class BulletMap
 {
 
     public static List<Bullet> copies = new List<>();
-    public static BufferTex SIZE16;
-    public static BufferTex SIZE32;
-    public static BufferTex SIZE64;
+    public static Tex SIZE16;
+    public static Tex SIZE32;
+    public static Tex SIZE64;
 
     public static Bullet[][] type_color_mat = new Bullet[1024][16];
     public static Sound[] type_sound_mat = new Sound[1024];
 
-    public static void registerLaser(int type, int ln, int size, int bw, int bh, int rw, int rh, BufferTex tex, Sound sound)
+    public static void registerLaser(int type, int ln, int size, int bw, int bh, int rw, int rh, Tex tex, Sound sound)
     {
         register(Laser::new, type, ln, size, bw, bh, rw, rh, true, false, tex, sound);
     }
 
-    public static void register(int type, int ln, int size, int bw, int bh, int rw, int rh, boolean rot, boolean roting, BufferTex tex, Sound sound)
+    public static void register(int type, int ln, int size, int bw, int bh, int rw, int rh, boolean rot, boolean roting, Tex tex, Sound sound)
     {
         register(Bullet::new, type, ln, size, bw, bh, rw, rh, rot, roting, tex, sound);
     }
 
-    public static void register(Provider<? extends Bullet> obj, int type, int ln, int size, int bw, int bh, int rw, int rh, boolean rot, boolean roting, BufferTex tex, Sound sound)
+    public static void register(Provider<? extends Bullet> obj, int type, int ln, int size, int bw, int bh, int rw, int rh, boolean rot, boolean roting, Tex tex, Sound sound)
     {
         Bullet[] col = type_color_mat[type];
         type_sound_mat[type] = sound;

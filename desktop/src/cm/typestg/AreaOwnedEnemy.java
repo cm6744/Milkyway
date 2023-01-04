@@ -1,21 +1,22 @@
 package cm.typestg;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.lang.maths.Mth;
+import cm.milkyway.opengl.render.g2d.Tex;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkyway.opengl.render.g2d.AreaAnimated;
 import cm.milkyway.opengl.render.g2d.AreaStatic;
-import cm.milkyway.opengl.render.g2d.BufferTex;
+import cm.milkyway.opengl.render.g2d.Tex;
 
 public class AreaOwnedEnemy extends AreaStatic
 {
 
-    BufferTex magic;
+    Tex magic;
     AreaAnimated glowing;
 
     double rot = Mth.random() < 0.5 ? -5 : 5;
     double rotation;
 
-    public static AreaStatic create(BufferTex tex, BufferTex mag)
+    public static AreaStatic create(Tex tex, Tex mag)
     {
         AreaOwnedEnemy owned = new AreaOwnedEnemy();
         owned.magic = mag;
@@ -23,37 +24,17 @@ public class AreaOwnedEnemy extends AreaStatic
         return owned;
     }
 
-    public void render(double x1, double y1, double w, double h)
+    public void render(Graphics2D g, double x, double y, double w, double h)
     {
-        Milkyway.glBase.state().rotate(rotation += rot);
-        Milkyway.gl2d.dim(magic, x1 - w / 2, y1 - h / 2, w * 2, h * 2);
-        Milkyway.glBase.state().clear();
-        glowing.render(x1, y1, w, h);
+        g.setRotation(rotation += rot);
+        g.draw(magic, x - w / 2, y - h / 2, w * 2, h * 2);
+        g.setRotation(0);
+        glowing.render(g, x, y, w, h);
     }
 
-    public BufferTex texture()
+    public Tex texture()
     {
         return glowing.texture();
-    }
-
-    public double fw()
-    {
-        return glowing.fw();
-    }
-
-    public double fh()
-    {
-        return glowing.fh();
-    }
-
-    public double w()
-    {
-        return glowing.w();
-    }
-
-    public double h()
-    {
-        return glowing.h();
     }
 
     public AreaOwnedEnemy copy()

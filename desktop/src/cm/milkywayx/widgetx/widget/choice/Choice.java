@@ -1,11 +1,11 @@
 package cm.milkywayx.widgetx.widget.choice;
 
-import cm.milkyway.Milkyway;
 import cm.milkyway.opengl.input.Key;
 import cm.milkyway.opengl.render.g2d.Text;
+import cm.milkyway.opengl.render.graphics.Graphics2D;
 import cm.milkywayx.widgetx.base.RenderBuffer;
-import cm.milkyway.lang.container.List;
-import cm.milkyway.lang.container.Map;
+import cm.milkyway.lang.container.list.List;
+import cm.milkyway.lang.container.map.Map;
 
 public abstract class Choice extends RenderBuffer
 {
@@ -18,32 +18,28 @@ public abstract class Choice extends RenderBuffer
     boolean isUpDown;
     boolean xyPositiveMove;
     boolean canMove;
-    Key curPost = Milkyway.keys.key("left");
-    Key curNeg = Milkyway.keys.key("right");
-
-    public void toUpDownDirection()
-    {
-        curPost = Milkyway.keys.key("up");
-        curNeg = Milkyway.keys.key("down");
-        isUpDown = true;
-    }
-
-    public void toLeftRightDirection()
-    {
-        curPost = Milkyway.keys.key("left");
-        curNeg = Milkyway.keys.key("right");
-        isUpDown = false;
-    }
+    Key curPost;
+    Key curNeg;
 
     public void disableMove()
     {
         canMove = false;
     }
 
-    public void setKey(Key l, Key r)
+    public void setKey(Key backward, Key toward)
     {
-        curPost = l;
-        curNeg = r;
+        curPost = backward;
+        curNeg = toward;
+    }
+
+    public void toUpDown()
+    {
+        isUpDown = true;
+    }
+
+    public void toLeftRight()
+    {
+        isUpDown = false;
     }
 
     public void tickThen()
@@ -88,13 +84,13 @@ public abstract class Choice extends RenderBuffer
 
     protected abstract boolean rightScroll();
 
-    public void renderThen(double x, double y, double w, double h)
+    public void renderThen(Graphics2D g, double x, double y, double w, double h)
     {
         areas.iterate((o, i) -> {
-            o.render();
+            o.render(g);
             Text text = texts.get(o);
             if(text != null) {
-                text.render(o.box().x(), o.box().yc2(), true);
+                g.draw(text, o.box().x(), o.box().yc2(), true);
             }
         }, false);
     }
